@@ -1,3 +1,8 @@
+## 
+#  Author:   Dean Lorenzo
+#  Created:  Mar 20t 2023     
+#  Updated:  Mar 28, 2023
+
 from html.parser import HTMLParser
 from typing import Dict
 import urllib.request
@@ -65,6 +70,10 @@ class WeatherDataParser(HTMLParser):
             self.in_temp_cell = False
 
     def handle_data(self, data):
+        """
+        This method handles the creation of the temporary current temps
+        dictionary for processing daily temps.
+        """
         # Check if parser is inside a temperature cell, current date is not 
         # None, and data is a valid float
         if self.in_temp_cell and self.current_temps is not None and \
