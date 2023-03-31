@@ -16,21 +16,28 @@ class DBOperations:
         """Creates the weather_data table if it does not already exist."""
         self.cursor.execute("""
             CREATE TABLE IF NOT EXISTS weather_data (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                sample_date TEXT,
-                location TEXT,
-                min_temp REAL,
-                max_temp REAL,
-                avg_temp REAL
-            )
+                id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                sample_date TEXT NOT NULL,
+                location TEXT NOT NULL,
+                min_temp REAL NOT NULL,
+                max_temp REAL NOT NULL,
+                avg_temp REAL NOT NULL
+            );
         """)
         self.conn.commit() # Commits the changes to the database.
 
-    def fetch_data(self, location, sample_date):
-        """Takes location and sample_date parameters to return the desired data from the database."""
-        self.cursor.execute('SELECT min_temp, max_temp, avg_temp FROM weather_data WHERE location = ? AND sample_date = ?', (location, sample_date))
+    def fetch_sample_data(self, location, start_date, end_date):
+        """Fetches the sample data for a given location between two dates."""
+        sql = f"""
+            SELECT sample_date, min_temp, max_temp, avg_temp 
+            FROM weather_data 
+            WHERE location = ? 
+            AND sample_date BETWEEN {start_date} AND {end_date} ?
+        """
+        self.cursor.execute(sql, (location, start_date, end_date))
         data = self.cursor.fetchall()
-
+        return data
+    
     def save_data(self, sample_date, location, min_temp, max_temp, avg_temp):
         """Inserts and commits data to the weather_data table if it does not already exist."""
         sql = """
