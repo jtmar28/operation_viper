@@ -1,5 +1,5 @@
 import sqlite3
-import logging
+from dbcm import DBCM
 
 class DBOperations:
     """
@@ -27,7 +27,8 @@ class DBOperations:
     def initialize_db(self):
         """Creates the weather_data table if it does not already exist."""
         try:
-            self.cursor.execute("""
+            with DBCM(self.db_name) as database:
+            database.cursor.execute("""
                 CREATE TABLE IF NOT EXISTS weather_data (
                     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
                     sample_date TEXT NOT NULL,
@@ -37,7 +38,10 @@ class DBOperations:
                     avg_temp REAL NOT NULL
                 );
             """)
-            self.conn.commit() # Commits the changes to the database.
+            database.conn.commit() # Commits the changes to the database.
+        except Exception as exception:
+            print("DBOperations:initialize_db:", exception)
+            self.logger.error("DBOperations:initialize_db:%s", exception)
 
     def fetch_sample_data(self, location, start_date, end_date):
         """Fetches the sample data for a given location between two dates."""
