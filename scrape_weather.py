@@ -78,10 +78,6 @@ class WeatherDataParser(HTMLParser):
         # None, and data is a valid float
         if self.in_temp_cell and self.current_temps is not None and \
             self.current_date is not None:
-            if self.current_date in self.weather: 
-                self.duplicate_key_found = True
-            else:
-                self.duplicate_key_found = False
             try:
                 temp_value = float(data)
                 # Add temperature value to current_temps dictionary if key
@@ -98,10 +94,9 @@ class WeatherDataParser(HTMLParser):
     def get_starttag_text(self):
         """
         This method returns the text of the start tag that caused the
-        callback.
+        callback and is used to identify the oldest date that weather is stored.
         """
         return self.rawdata[self.offset:self.offset + self.length].lower()
-
 
 if __name__ == "__main__":
     parser = WeatherDataParser()
