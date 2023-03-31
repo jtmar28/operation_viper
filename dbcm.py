@@ -21,7 +21,7 @@ class DBCM():
 
     def __enter__(self):
         """
-        Connects to the database
+        Connects to the database.
         """
         try:
             return self.conn
@@ -32,7 +32,7 @@ class DBCM():
 
     def __exit__(self, exc_type, exc_value, exc_tb):
         """
-        Closes the connection to the database
+        Closes the connection to the database.
         """
         try:
             self.conn.close()
