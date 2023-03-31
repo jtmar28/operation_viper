@@ -1,12 +1,24 @@
 import sqlite3
+import logging
 
 class DBOperations:
+    """
+    Contains methods to handle database operations, such as initializing table,
+    saving data, purging data, and fetching data.
+    """
+    
+    logger = logging.getLogger("main." + __name__);
+    
     def __init__(self, weather_database):
         """Called when object is created. Initializes databaase connection and cursor."""
-        self.weather_database = weather_database # assigns weather_database argument to self.weather_database attribute of DBOperations instance.
-        self.conn = sqlite3.connect(weather_database) # creates a connection to weather_database.
-        self.cursor = self.conn.cursor() # creates a cursor object.
-
+        try: 
+            self.weather_database = weather_database # assigns weather_database argument to self.weather_database attribute of DBOperations instance.
+            self.conn = sqlite3.connect(weather_database) # creates a connection to weather_database.
+            self.cursor = self.conn.cursor() # creates a cursor object.
+        except Exception as exception:
+            print("DBOperations:__init__:", exception)
+            self.logger.error("DBOperations:__init__:%s", exception)
+            
     def __del__(self):
         """Called when the object is about to be destroyed."""
         self.cursor.close()
@@ -14,17 +26,18 @@ class DBOperations:
 
     def initialize_db(self):
         """Creates the weather_data table if it does not already exist."""
-        self.cursor.execute("""
-            CREATE TABLE IF NOT EXISTS weather_data (
-                id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-                sample_date TEXT NOT NULL,
-                location TEXT NOT NULL,
-                min_temp REAL NOT NULL,
-                max_temp REAL NOT NULL,
-                avg_temp REAL NOT NULL
-            );
-        """)
-        self.conn.commit() # Commits the changes to the database.
+        try:
+            self.cursor.execute("""
+                CREATE TABLE IF NOT EXISTS weather_data (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                    sample_date TEXT NOT NULL,
+                    location TEXT NOT NULL,
+                    min_temp REAL NOT NULL,
+                    max_temp REAL NOT NULL,
+                    avg_temp REAL NOT NULL
+                );
+            """)
+            self.conn.commit() # Commits the changes to the database.
 
     def fetch_sample_data(self, location, start_date, end_date):
         """Fetches the sample data for a given location between two dates."""
