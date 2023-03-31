@@ -90,6 +90,7 @@ class WeatherDataParser(HTMLParser):
             self.current_date is not None:
             try:
                 temp_value = float(data)
+                
                 # Add temperature value to current_temps dictionary if key
                 # does not exist yet
                 if "max_temp" not in self.current_temps:
