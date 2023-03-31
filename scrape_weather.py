@@ -1,5 +1,4 @@
-from html.parser import HTMLParser
-from typing import Dict
+from html.parser import HTMLParser 
 import urllib.request
 import datetime
 
@@ -8,11 +7,13 @@ class WeatherDataParser(HTMLParser):
     This class inherits the HTMLParser class in in order to scrape weather data
     from the climate.weather.gc.ca website.
     """
+
     def __init__(self):
         """
         This constructor initializes the fields needed to support
         WeatherDataParser class functionality.
         """
+
         super().__init__()         # inherit the HTMLParser class
         self.in_table = False      # Flag indicating parser is inside the table
         self.in_date_cell = False  # Flag indicating parser is inside a date cell
@@ -26,12 +27,15 @@ class WeatherDataParser(HTMLParser):
         """
         This method searches for the appropriate div tag where the data is stored.
         """
+
         # Check if parser is inside the table and set the flag
         if tag == "div" and ("id", "dynamicDataTable") in attrs:
             self.in_table = True
+
         # Check if parser is inside a date cell and set the flag
         elif tag == "tr" and self.in_table:
             self.in_date_cell = True
+
         # Check if parser is inside an abbr tag inside a date cell, set the date
         elif tag == "abbr" and self.in_date_cell:
             for name, value in attrs:
@@ -43,8 +47,10 @@ class WeatherDataParser(HTMLParser):
         elif tag == "td" and self.current_temps is not None:
             self.in_temp_cell = True
 
-        # Check if parser is inside a li tag with id="nav-prev1" and class="previous disabled"
-        elif tag == "li" and ("id", "nav-prev1") in attrs and ("class", "previous disabled") in attrs:
+        # Check if parser is inside a li tag with id="nav-prev1" 
+        # and class="previous disabled"
+        elif tag == "li" and ("id", "nav-prev1") in attrs \
+            and ("class", "previous disabled") in attrs:
             self.found_oldest_date = True
  
     def handle_endtag(self, tag):
@@ -52,9 +58,11 @@ class WeatherDataParser(HTMLParser):
         This method writes to the weather dictionary all of the corresponding
         temperatures.
         """
+
         # Check if parser has exited the table and reset the flag
         if tag == "div" and self.in_table:
             self.in_table = False
+
         # Check if parser has exited a date cell and reset the flag
         elif tag == "tr" and self.in_date_cell:
             self.in_date_cell = False
@@ -65,6 +73,7 @@ class WeatherDataParser(HTMLParser):
                 self.weather[self.current_date] = self.current_temps
                 self.current_date = None
                 self.current_temps = None
+
         # Check if parser has exited a temperature cell and reset the flag
         elif tag == "td" and self.in_temp_cell:
             self.in_temp_cell = False
@@ -74,6 +83,7 @@ class WeatherDataParser(HTMLParser):
         This method handles the creation of the temporary current temps
         dictionary for processing daily temps.
         """
+
         # Check if parser is inside a temperature cell, current date is not
         # None, and data is a valid float
         if self.in_temp_cell and self.current_temps is not None and \
@@ -96,6 +106,7 @@ class WeatherDataParser(HTMLParser):
         This method returns the text of the start tag that caused the
         callback and is used to identify the oldest date that weather is stored.
         """
+
         return self.rawdata[self.offset:self.offset + self.length].lower()
 
 if __name__ == "__main__":
@@ -111,7 +122,9 @@ if __name__ == "__main__":
     year = current_year
     month = current_month
     while True:
-        myurl = f"https://climate.weather.gc.ca/climate_data/daily_data_e.html?StationID=27174&timeframe=2&StartYear=1840&EndYear={current_year}&Day=1&Year={year}&Month={month}"
+        myurl = (f"https://climate.weather.gc.ca/climate_data/daily_data_e.html"
+                 f"?StationID=27174&timeframe=2&StartYear=1840"
+                 f"&EndYear={current_year}&Day=1&Year={year}&Month={month}")
 
         with urllib.request.urlopen(myurl) as f:
             html = f.read().decode("utf-8")
@@ -119,7 +132,8 @@ if __name__ == "__main__":
             print(f"Processing weather data for {month}/{year}")  
             
             # Check if oldest date is found
-            if ('li', 'nav-prev1') in parser.getpos() and ('class', 'previous disabled') in parser.get_starttag_text():
+            if ('li', 'nav-prev1') in parser.getpos() and ('class', 
+                'previous disabled') in parser.get_starttag_text():
                 parser.found_oldest_date = True
                 break
 
