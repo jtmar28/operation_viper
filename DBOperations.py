@@ -28,17 +28,17 @@ class DBOperations:
         """Creates the weather_data table if it does not already exist."""
         try:
             with DBCM(self.db_name) as database:
-            database.cursor.execute("""
-                CREATE TABLE IF NOT EXISTS weather_data (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-                    sample_date TEXT NOT NULL,
-                    location TEXT NOT NULL,
-                    min_temp REAL NOT NULL,
-                    max_temp REAL NOT NULL,
-                    avg_temp REAL NOT NULL
-                );
-            """)
-            database.conn.commit() # Commits the changes to the database.
+                database.cursor.execute("""
+                    CREATE TABLE IF NOT EXISTS weather_data (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        sample_date TEXT NOT NULL,
+                        location TEXT NOT NULL,
+                        min_temp REAL NOT NULL,
+                        max_temp REAL NOT NULL,
+                        avg_temp REAL NOT NULL
+                    );
+                """)
+                database.conn.commit() # Commits the changes to the database.
         except Exception as exception:
             print("DBOperations:initialize_db:", exception)
             self.logger.error("DBOperations:initialize_db:%s", exception)
