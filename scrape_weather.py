@@ -1,4 +1,3 @@
-# scrape_weather.py file start
 from html.parser import HTMLParser 
 import urllib.request
 import datetime
@@ -140,7 +139,6 @@ class WeatherDataParser(HTMLParser):
                     year -= 1
 
         return parser.weather
-
 
 if __name__ == "__main__":
     weather_dictionary = WeatherDataParser()
