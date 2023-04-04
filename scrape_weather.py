@@ -1,4 +1,3 @@
-# scrape_weather.py file start
 from html.parser import HTMLParser 
 import urllib.request
 import datetime
