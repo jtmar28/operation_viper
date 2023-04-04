@@ -1,7 +1,17 @@
-from html.parser import HTMLParser 
+##
+#   Group Project - Weather Processing App
+#   Course: ADEV-3005(234116)
+#   Team members: Dean Lorenzo, Jesse Kosowan, Justin Martinez
+#   Milestone #1
+#
+
+"""
+This module provides functionality to parse data as outlined in the
+WeatherDataParser class below.
+"""
+from html.parser import HTMLParser
 import urllib.request
 import datetime
-from pprint import pprint
 
 class WeatherDataParser(HTMLParser):
     """
@@ -48,11 +58,11 @@ class WeatherDataParser(HTMLParser):
         elif tag == "td" and self.current_temps is not None:
             self.in_temp_cell = True
 
-        # Check if parser is inside a li tag with id="nav-prev1" 
+        # Check if parser is inside a li tag with id="nav-prev1"
         # and class="previous disabled"
         elif tag == "li" and ("id", "nav-prev1") in attrs \
             and ("class", "previous disabled") in attrs:
-                self.found_oldest_date = True
+            self.found_oldest_date = True
 
     def handle_data(self, data):
         """
@@ -66,7 +76,7 @@ class WeatherDataParser(HTMLParser):
             self.current_date is not None:
             try:
                 temp_value = float(data)
-                
+
                 # Add temperature value to current_temps dictionary if key
                 # does not exist yet
                 if "max_temp" not in self.current_temps:
@@ -77,7 +87,7 @@ class WeatherDataParser(HTMLParser):
                     self.current_temps["mean_temp"] = temp_value
             except ValueError:
                 pass
- 
+
     def handle_endtag(self, tag):
         """
         This method writes to the weather dictionary all of the corresponding
@@ -95,23 +105,23 @@ class WeatherDataParser(HTMLParser):
             # add to weather data
             if self.current_date is not None and self.current_date \
                 not in ["kilometres per hour", "Average", "Extreme"]:
-                    self.weather[self.current_date] = self.current_temps
-                    self.current_date = None
-                    self.current_temps = None
+                self.weather[self.current_date] = self.current_temps
+                self.current_date = None
+                self.current_temps = None
 
         # Check if parser has exited a temperature cell and reset the flag
         elif tag == "td" and self.in_temp_cell:
-            self.in_temp_cell = False    
-    
+            self.in_temp_cell = False
+
     def get_weather_dictionary(self):
         """
-        This method returns the entire weather dictionary. 
+        This method returns the entire weather dictionary.
         """
         parser = WeatherDataParser()
-        parser.found_oldest_date = False  # Initialize the flag
+        # Initialize the flag
+        parser.found_oldest_date = False
 
         current_month = datetime.datetime.now().month
-        current_date = datetime.datetime.now().day
         current_year = datetime.datetime.now().year
 
         year = current_year
@@ -123,8 +133,8 @@ class WeatherDataParser(HTMLParser):
 
             print(f"Parsing data for {datetime.date(year, month, 1).strftime('%B %Y')}")
 
-            with urllib.request.urlopen(myurl) as f:
-                html = f.read().decode("utf-8")
+            with urllib.request.urlopen(myurl) as request:
+                html = request.read().decode("utf-8")
                 parser.feed(html)
                 if parser.found_oldest_date:
                     break
@@ -134,9 +144,9 @@ class WeatherDataParser(HTMLParser):
                     year -= 1
 
         print("Weather dictionary data scrape complete.")
-        return parser.weather 
+        return parser.weather
 
 if __name__ == "__main__":
     weather_dictionary = WeatherDataParser()
-    pprint(weather_dictionary.get_weather_dictionary())
+    print(weather_dictionary.get_weather_dictionary())
  
