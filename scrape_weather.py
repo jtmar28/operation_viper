@@ -1,6 +1,8 @@
+# scrape_weather.py file start
 from html.parser import HTMLParser 
 import urllib.request
 import datetime
+from pprint import pprint
 
 class WeatherDataParser(HTMLParser):
     """
@@ -52,31 +54,6 @@ class WeatherDataParser(HTMLParser):
         elif tag == "li" and ("id", "nav-prev1") in attrs \
             and ("class", "previous disabled") in attrs:
                 self.found_oldest_date = True
- 
-    def handle_endtag(self, tag):
-        """
-        This method writes to the weather dictionary all of the corresponding
-        temperatures.
-        """
-
-        # Check if parser has exited the table and reset the flag
-        if tag == "div" and self.in_table:
-            self.in_table = False
-
-        # Check if parser has exited a date cell and reset the flag
-        elif tag == "tr" and self.in_date_cell:
-            self.in_date_cell = False
-            # Check if current date is not None and not a non-date value and
-            # add to weather data
-            if self.current_date is not None and self.current_date \
-                not in ["kilometres per hour", "Average", "Extreme"]:
-                    self.weather[self.current_date] = self.current_temps
-                    self.current_date = None
-                    self.current_temps = None
-
-        # Check if parser has exited a temperature cell and reset the flag
-        elif tag == "td" and self.in_temp_cell:
-            self.in_temp_cell = False
 
     def handle_data(self, data):
         """
@@ -101,16 +78,33 @@ class WeatherDataParser(HTMLParser):
                     self.current_temps["mean_temp"] = temp_value
             except ValueError:
                 pass
-
-    def get_starttag_text(self):
+ 
+    def handle_endtag(self, tag):
         """
-        This method returns the text of the start tag that caused the
-        callback and is used to identify the oldest date that weather is stored.
+        This method writes to the weather dictionary all of the corresponding
+        temperatures.
         """
 
-        return self.rawdata[self.offset:self.offset + self.length].lower()
+        # Check if parser has exited the table and reset the flag
+        if tag == "div" and self.in_table:
+            self.in_table = False
+
+        # Check if parser has exited a date cell and reset the flag
+        elif tag == "tr" and self.in_date_cell:
+            self.in_date_cell = False
+            # Check if current date is not None and not a non-date value and
+            # add to weather data
+            if self.current_date is not None and self.current_date \
+                not in ["kilometres per hour", "Average", "Extreme"]:
+                    self.weather[self.current_date] = self.current_temps
+                    self.current_date = None
+                    self.current_temps = None
+
+        # Check if parser has exited a temperature cell and reset the flag
+        elif tag == "td" and self.in_temp_cell:
+            self.in_temp_cell = False    
     
-    def GetWeatherDictionary(self):
+    def get_weather_dictionary(self):
         """
         This method returns the entire weather dictionary. 
         """
@@ -125,8 +119,10 @@ class WeatherDataParser(HTMLParser):
         month = current_month
         while True:
             myurl = (f"https://climate.weather.gc.ca/climate_data/daily_data_e.html"
-                    f"?StationID=27174&timeframe=2&StartYear=1840"
+                    f"?StationID=27174&timeframe=2&StartYear=1990"
                     f"&EndYear={current_year}&Day=1&Year={year}&Month={month}")
+
+            print(f"Parsing data for {datetime.date(year, month, 1).strftime('%B %Y')}")
 
             with urllib.request.urlopen(myurl) as f:
                 html = f.read().decode("utf-8")
@@ -138,8 +134,10 @@ class WeatherDataParser(HTMLParser):
                     month = 12
                     year -= 1
 
-        return parser.weather
+        print("Weather dictionary data scrape complete.")
+        return parser.weather 
 
 if __name__ == "__main__":
     weather_dictionary = WeatherDataParser()
-    print(weather_dictionary.GetWeatherDictionary())
+    pprint(weather_dictionary.get_weather_dictionary())
+ 
