@@ -1,71 +1,185 @@
+"""
+This module adds functionality to the Weather App but managing database data
+that is parsed from the scrape_weather module.
+"""
+from datetime import datetime
+from datetime import timedelta
+from pprint import pprint
+import re
 import sqlite3
 from dbcm import DBCM
+from scrape_weather import WeatherDataParser
 
 class DBOperations:
-    """
-    Contains methods to handle database operations, such as initializing table,
-    saving data, purging data, and fetching data.
-    """
-    
-    logger = logging.getLogger("main." + __name__);
-    
-    def __init__(self, weather_database):
-        """Called when object is created. Initializes databaase connection and cursor."""
-        try: 
-            self.weather_database = weather_database # assigns weather_database argument to self.weather_database attribute of DBOperations instance.
-            self.conn = sqlite3.connect(weather_database) # creates a connection to weather_database.
-            self.cursor = self.conn.cursor() # creates a cursor object.
-        except Exception as exception:
-            print("DBOperations:__init__:", exception)
-            self.logger.error("DBOperations:__init__:%s", exception)
-            
-    def __del__(self):
-        """Called when the object is about to be destroyed."""
+    def __init__(self):
+        """
+        This constructor creates a connection and cursor for the database.
+        """
+        self.conn = sqlite3.connect("weather_database.sqlite")
+        self.cursor = self.conn.cursor()
+        print("Opened database successfully.")
+
+    def initialize_db(self):
+        """
+        Initializes the weather_data table in the database with the necessary columns.
+        """
+
+        self.cursor.execute("""
+            CREATE TABLE IF NOT EXISTS weather_data (
+                id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                sample_date TEXT,
+                location TEXT,
+                max_temp REAL,
+                min_temp REAL,                
+                mean_temp REAL
+            );
+        """)
+        self.conn.commit()
+
+    def save_data(self, data):
+        """
+        Saves weather data to the database for each date in the given dictionary.
+        """
+
+        for sample_date, temps in data.items():
+            location = 'Winnipeg'
+            max_temp = temps.get('max_temp', None)
+            min_temp = temps.get('min_temp', None)
+            mean_temp = temps.get('mean_temp', None)
+
+            if max_temp is not None and min_temp is not None and mean_temp is not None:
+                self.cursor.execute("""
+                    SELECT * 
+                    FROM weather_data 
+                    WHERE sample_date=?
+                """, (sample_date,))
+                existing_data = self.cursor.fetchone()
+
+                if existing_data:
+                    print(f"Data already exists for {sample_date}. Skipping...")
+                else:
+                    try:
+                        self.cursor.execute("""
+                            INSERT INTO weather_data 
+                            (sample_date, 
+                            location,
+                            max_temp, 
+                            min_temp, 
+                            mean_temp)
+                            VALUES (?, ?, ?, ?, ?)
+                        """, (sample_date,
+                              location,
+                              max_temp,
+                              min_temp,
+                              mean_temp))
+                        self.conn.commit()
+                        print(f"Data saved for {sample_date}")
+                    except sqlite3.Error as e:
+                        print(f"Error inserting data for {sample_date}: {e}")
+        print('Data saved to the database.')
+
+    def purge_data(self):
+        """
+        Deletes all data from the weather_data table in the database.
+        """
+        self.cursor.execute('DELETE FROM weather_data')
+        self.conn.commit()
+        print('All data purged from the database.')
+
+    def close(self):
+        """
+        Closes the database connection.
+        """
+
         self.cursor.close()
         self.conn.close()
 
-    def initialize_db(self):
-        """Creates the weather_data table if it does not already exist."""
-        try:
-            with DBCM(self.db_name) as database:
-                database.cursor.execute("""
-                    CREATE TABLE IF NOT EXISTS weather_data (
-                        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-                        sample_date TEXT NOT NULL,
-                        location TEXT NOT NULL,
-                        min_temp REAL NOT NULL,
-                        max_temp REAL NOT NULL,
-                        avg_temp REAL NOT NULL
-                    );
-                """)
-                database.conn.commit() # Commits the changes to the database.
-        except Exception as exception:
-            print("DBOperations:initialize_db:", exception)
-            self.logger.error("DBOperations:initialize_db:%s", exception)
-
-    def fetch_sample_data(self, location, start_date, end_date):
-        """Fetches the sample data for a given location between two dates."""
-        sql = f"""
-            SELECT sample_date, min_temp, max_temp, avg_temp 
-            FROM weather_data 
-            WHERE location = ? 
-            AND sample_date BETWEEN {start_date} AND {end_date} ?
+    def fetch_data(self, start_date, end_date):
         """
-        self.cursor.execute(sql, (location, start_date, end_date))
-        data = self.cursor.fetchall()
-        return data
-    
-    def save_data(self, sample_date, location, min_temp, max_temp, avg_temp):
-        """Inserts and commits data to the weather_data table if it does not already exist."""
-        sql = """
-                  INSERT OR IGNORE INTO weather_data (sample_date, location, min_temp, max_temp, avg_temp)
-                  VALUES (?, ?, ?, ?, ?);
-              """
-        data = (sample_date, location, min_temp, max_temp, avg_temp)
-        self.cursor.execute(sql, data)
-        self.conn.commit()
+        Fetches weather data from the database for the specified date range and
+        returns it as a tuple. Also, if at the time of fetching, the database
+        has new records that haven't been saved, it will save the new data.
+        """
 
-    def purge_data(self):
-        """Deletes all data from the weather_data table."""
-        self.cursor.execute('DELETE FROM weather_data')
-        self.conn.commit()
+        # Get the latest date from the database
+        self.cursor.execute("""
+            SELECT MAX(sample_date) FROM weather_data
+        """)
+        latest_date = self.cursor.fetchone()[0]
+
+        # If no data exists in the database, set the latest date to the start date
+        if not latest_date:
+            latest_date = start_date
+
+        # Convert start and end dates to the correct format for the database
+        start_date_formatted = datetime.strptime(latest_date, '%B %d, %Y') + timedelta(days=1)
+        end_date_formatted = datetime.strptime(end_date, '%Y-%m-%d')
+
+        # Create an empty list to store the temperature data for each date
+        data = []
+
+        # Loop through the dates and fetch the temperature data for each date
+        while start_date_formatted <= end_date_formatted:
+            sample_date = start_date_formatted.strftime('%B %d, %Y')
+            # Drop leading zeroes only from the day portion of the formatted date
+            sample_date = re.sub(r'(?<=\s)0', '', sample_date)
+            self.cursor.execute("""
+                SELECT max_temp, min_temp, mean_temp 
+                FROM weather_data 
+                WHERE sample_date = ?
+            """, (sample_date,))
+            result = self.cursor.fetchone()
+
+            # If the temperature data for the date exists, add it to the list
+            if result:
+                max_temp, min_temp, mean_temp = result
+                data.append((sample_date, max_temp, min_temp, mean_temp))
+
+            # Increment the date by one day using timedelta module from datetime
+            start_date_formatted += timedelta(days=1)
+
+        # Save any missing data to the database
+        missing_data = WeatherDataParser().get_weather_dictionary(latest_date, end_date)
+        if missing_data:
+            self.save_data(missing_data)
+
+        # Return the list of temperature data as a tuple
+        return tuple(data)
+
+def create_entire_database():
+    """
+    This function creates the database for the first time in order to retrieve data
+    """
+    # Create a WeatherDataParser object to get the weather data
+    parser = WeatherDataParser()
+
+    # Create a DBOperations object to save the weather data to the database
+    db = DBOperations()
+    db.initialize_db()
+    db.save_data(parser.get_weather_dictionary())
+    db.close()
+
+if __name__ == "__main__":
+    """
+    This is the main function that instantiates a db object, and has
+    functionality to parse initial data to the database.
+    """
+
+    # create_entire_database()
+
+    # Create a DBOperations object to fetch weather data from the database
+    db = DBOperations()
+
+    # Prompt the user for start and end dates
+    start_date = input("Enter start date (YYYY-MM-DD): ")
+    end_date = input("Enter end date (YYYY-MM-DD): ")
+
+    # Fetch data from the database for the specified date range
+    data = db.fetch_data(start_date, end_date)
+
+    # Output data to the screen in the form of a tuple
+    pprint(data)
+
+    # Close the database connection
+    db.close()
+       
