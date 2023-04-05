@@ -11,8 +11,7 @@
 This module adds functionality to the Weather App but managing database data
 that is parsed from the scrape_weather module.
 """
-from datetime import datetime
-from datetime import timedelta
+from datetime import datetime, timedelta
 from pprint import pprint
 import re
 import sqlite3
@@ -51,8 +50,13 @@ class DBOperations:
         Saves weather data to the database for each date in the given dictionary.
         """
 
+        total_records_saved = 0
+
         with self.cursor as cur:
-            for sample_date, temps in data.items():
+            # weather_dictionary is reversed so that the oldest date for data is
+            # written in the database first, and the latest weather data is 
+            # inserted last
+            for sample_date, temps in reversed(data.items()):
                 location = 'Winnipeg'
                 max_temp = temps.get('max_temp', None)
                 min_temp = temps.get('min_temp', None)
@@ -70,7 +74,7 @@ class DBOperations:
                         print(f"Data already exists for {sample_date}. Skipping...")
                     else:
                         try:
-                            self.cursor.execute("""
+                            cur.execute("""
                                 INSERT INTO weather_data 
                                 (sample_date, 
                                 location,
@@ -85,9 +89,14 @@ class DBOperations:
                                 mean_temp))
                             cur.connection.commit()
                             print(f"Data saved for {sample_date}")
+                            total_records_saved += 1
                         except sqlite3.Error as e:
                             print(f"Error inserting data for {sample_date}: {e}")
-        print('Data saved to the database.')
+
+        if(total_records_saved == 0):
+            print(f"The database is up to date as of {datetime.now().strftime('%Y-%m-%d')}")
+        else:    
+            print(f"{total_records_saved} records saved to the database.")
 
     def purge_data(self):
         """
@@ -138,7 +147,6 @@ class DBOperations:
         # Return the list of temperature data as a tuple
         return tuple(data)
 
-
     def create_entire_database(self):
         """
         This function creates the database for the first time in order to retrieve data.
@@ -151,7 +159,6 @@ class DBOperations:
         self.initialize_db()
         self.save_data(parser.get_weather_dictionary())
         print("Entire database created and records added.")
-
     
     def update_database(self):
         """
@@ -165,52 +172,37 @@ class DBOperations:
             cur.execute("""
                 SELECT sample_date
                 FROM weather_data
-                WHERE id =  (SELECT min(id) 
+                WHERE id =  (SELECT max(id)
                              FROM weather_data)
             """)            
             latest_date = cur.fetchone()[0]
 
-        print(f"The newest record in the database is {latest_date}")
-        
-        # Drop leading zeroes only from the day portion of the formatted date
-        # latest_date = re.sub(r'(?<=\s)0', '', latest_date)
-        
         latest_date = datetime.strptime(latest_date, '%B %d, %Y')
+        date_after_latest = (latest_date + timedelta(days=1)).strftime('%Y-%m-%d') 
 
         # Format date to compare to today's date
-        latest_date = latest_date.strftime('%y-%m-%d')
-            
+        latest_date = latest_date.strftime('%Y-%m-%d')
+
         # Get today's date in 'YYYY-MM-DD' format
         today = datetime.now().strftime('%Y-%m-%d')
-
-        print(f"Today's date is {today}")
-
-        if(latest_date < today):
-            print("The latest date is older. ")
-        else:
-            print("Something is up")
+        date_before_today = (datetime.strptime(today, '%Y-%m-%d') - timedelta(days=1)).strftime('%Y-%m-%d')
 
         # Check if the latest date in the database is older than today's date
         if latest_date < today:
             # Create a WeatherDataParser object to get the weather data
             parser = WeatherDataParser()
 
-            # Get the new data and save it to the database 
-            new_data = parser.check_for_new_data(latest_date.strftime('%Y-%m-%d'), today)
-            self.save_data(new_data)
-
-            # Output how many new records were added to the database
-            num_new_records = len(new_data)
-            print(f"{num_new_records} new records added to the database.")
-        else:
-            print("Database is up to date.")
-        
+            # Get the new data and save it to the database
+            new_data = parser.check_for_new_data(date_after_latest, date_before_today)
+            self.save_data(new_data)            
 
 if __name__ == "__main__":
     """
     This is the main function that instantiates a db object, and has
     functionality to parse initial data to the database. 
     """
+
+    # SQLite viewer url is: https://inloop.github.io/sqlite-viewer/
 
     # # Create a DBOperations object to fetch weather data from the database
     db = DBOperations()
@@ -219,13 +211,13 @@ if __name__ == "__main__":
     # Check to see if the database has as new records to add
     db.update_database()
 
-    # # Prompt the user for start and end dates
-    # start_date = input("Enter start date (YYYY-MM-DD): ")
-    # end_date = input("Enter end date (YYYY-MM-DD): ")
+    # Prompt the user for start and end dates
+    start_date = input("Enter start date (YYYY-MM-DD): ")
+    end_date = input("Enter end date (YYYY-MM-DD): ")
 
-    # # Fetch data from the database for the specified date range
-    # data = db.fetch_data(start_date, end_date)
+    # Fetch data from the database for the specified date range
+    data = db.fetch_data(start_date, end_date)
 
-    # # Output data to the screen in the form of a tuple
-    # pprint(data)   
+    # Output data to the screen in the form of a tuple
+    pprint(data)   
        
