@@ -162,7 +162,7 @@ if __name__ == "__main__":
     data = db.fetch_data(start_date, end_date)
 
     # Output data to the screen in the form of a tuple
-    pprint(data)
+    print(data)
 
     # Close the database connection
     db.close()
