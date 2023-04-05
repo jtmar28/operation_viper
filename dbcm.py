@@ -4,53 +4,27 @@
 #   Group:          #10
 #   Team members:   Dean Lorenzo, Jesse Kosowan, Justin Martinez
 #   Milestone:      #2
-#   Updated:
+#   Updated:        Apr 5, 2023
 #
 
-import logging
-import sqlite3 
+import sqlite3
 
-class DBCM():
-    """
-    A database context manager which handles setup and teardown code.
-    """
-
-    logger = logging.getLogger("main." + __name__)
-
+class DBCM:
     def __init__(self, db_name):
-        """
-        Initializes the database context manager and stores the databases name.
-        """
-        try:
-            self.db_name = db_name
-            self.conn = sqlite3.connect(self.db_name)
-        except Exception as exception:
-            print("DBCM:__init__:", exception)
-            self.logger.error("DBCM:__init__:%s", exception)
+        self.db_name = db_name
+        self.connection = None
+        self.cursor = None
 
     def __enter__(self):
-        """
-        Connects to the database and returns a cursor object.
-        """
-        try:
-            self.cursor = self.conn.cursor()
-            return self.cursor
-        except Exception as exception:
-            print("DBCM:__enter__:", exception)
-            self.logger.error("DBCM:__enter__:%s", exception)
-        return None
+        self.connection = sqlite3.connect(self.db_name)
+        self.cursor = self.connection.cursor()
+        return self.cursor
 
-    def __exit__(self, exc_type, exc_value, exc_tb):
-        """
-        Commits changes and closes the connection to the database.
-        """
-        try:
-            if exc_type is None:
-                self.conn.commit()
-            else:
-                self.conn.rollback()
-            self.cursor.close()
-            self.conn.close()
-        except Exception as exception:
-            print("DBCM:__exit__:", exception)
-            self.logger.error("DBCM:__exit__:%s", exception)
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if exc_type is None:
+            self.connection.commit()
+        else:
+            self.connection.rollback()
+        self.cursor.close()
+        self.connection.close()
+        
