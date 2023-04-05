@@ -4,6 +4,7 @@
 #   Group:          #10
 #   Team members:   Dean Lorenzo, Jesse Kosowan, Justin Martinez
 #   Milestone:      #1
+#   Updated:        Apr 4, 2023
 #
 
 """
@@ -118,7 +119,9 @@ class WeatherDataParser(HTMLParser):
         """
         This method returns the entire weather dictionary.
         """
+
         parser = WeatherDataParser()
+
         # Initialize the flag
         parser.found_oldest_date = False
 
@@ -147,7 +150,51 @@ class WeatherDataParser(HTMLParser):
         print("Weather dictionary data scrape complete.")
         return parser.weather
 
+    def check_for_new_data(self, start_date, end_date):
+        """
+        This method parses new data from the website for all the dates
+        between the start_date and end_date parameters and prints the data line by line.
+        """
+        parser = WeatherDataParser()
+
+        # Convert start_date and end_date to datetime objects
+        start_datetime = datetime.datetime.strptime(start_date, '%Y-%m-%d')
+        end_datetime = datetime.datetime.strptime(end_date, '%Y-%m-%d')
+
+        # Initialize current_date to start_date
+        current_date = start_datetime
+
+        # Iterate over the days from start_date to end_date
+        while current_date <= end_datetime:
+            # Construct the URL for the current date
+            my_url = (f"https://climate.weather.gc.ca/climate_data/daily_data_e.html"
+                    f"?StationID=27174&timeframe=2&StartYear={current_date.year}"
+                    f"&EndYear={current_date.year}&Day={current_date.day}&Year={current_date.year}&Month={current_date.month}")
+
+            # Print a message to indicate the date being parsed
+            print(f"Parsing data for {current_date.strftime('%B %d, %Y')}")
+
+            # Use urllib.request to retrieve the HTML content for the current date
+            with urllib.request.urlopen(my_url) as request:
+                html = request.read().decode("utf-8")
+
+                # Feed the HTML content to the parser
+                parser.feed(html)
+
+                # If the current date is within the range of start_date and end_date,
+                # print the weather data for that date line by line
+                for date_str in parser.weather.keys():
+                    date = datetime.datetime.strptime(date_str, '%B %d, %Y').date()
+                    if start_datetime.date() <= date <= end_datetime.date() and date == current_date.date():
+                        weather_data = parser.weather[date_str]
+                        for key, value in weather_data.items():
+                            print(f"{key}: {value}")
+
+            # Move on to the next day
+            current_date += datetime.timedelta(days=1)
+
+        return parser.weather    
+
 if __name__ == "__main__":
     weather_dictionary = WeatherDataParser()
-    print(weather_dictionary.get_weather_dictionary())
- 
+    print(weather_dictionary.get_weather_dictionary()) 
