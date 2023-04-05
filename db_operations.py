@@ -99,7 +99,11 @@ class DBOperations:
         This method fetches the data from the database according to what the 
         user inputs for the start and end dates.
         """
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> 691113ffbd6ee337ca9ae2bfb567019a909c35b8
         # Convert start and end dates to the correct format for the database
         start_date_formatted = datetime.strptime(start_date, '%Y-%m-%d')
         end_date_formatted = datetime.strptime(end_date, '%Y-%m-%d')
@@ -130,9 +134,16 @@ class DBOperations:
         # Return the list of temperature data as a tuple
         return tuple(data)
 
+<<<<<<< HEAD
 def create_entire_database():
     """
     This function creates the database for the first time in order to retrieve data.
+=======
+
+def create_entire_database():
+    """
+    This function creates the database for the first time in order to retrieve data
+>>>>>>> 691113ffbd6ee337ca9ae2bfb567019a909c35b8
     """
     # Create a WeatherDataParser object to get the weather data
     parser = WeatherDataParser()
@@ -162,7 +173,11 @@ if __name__ == "__main__":
     data = db.fetch_data(start_date, end_date)
 
     # Output data to the screen in the form of a tuple
+<<<<<<< HEAD
     print(data)
+=======
+    pprint(data)
+>>>>>>> 691113ffbd6ee337ca9ae2bfb567019a909c35b8
 
     # Close the database connection
     db.close()

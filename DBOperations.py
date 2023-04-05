@@ -160,10 +160,6 @@ def create_entire_database():
     db.close()
 
 if __name__ == "__main__":
-    """
-    This is the main function that instantiates a db object, and has
-    functionality to parse initial data to the database.
-    """
 
     # create_entire_database()
 
@@ -181,5 +177,4 @@ if __name__ == "__main__":
     pprint(data)
 
     # Close the database connection
-    db.close()
-       
+    db.close()       
