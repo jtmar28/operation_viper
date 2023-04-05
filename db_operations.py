@@ -99,7 +99,7 @@ class DBOperations:
         This method fetches the data from the database according to what the 
         user inputs for the start and end dates.
         """
-        
+
         # Convert start and end dates to the correct format for the database
         start_date_formatted = datetime.strptime(start_date, '%Y-%m-%d')
         end_date_formatted = datetime.strptime(end_date, '%Y-%m-%d')
@@ -129,7 +129,6 @@ class DBOperations:
 
         # Return the list of temperature data as a tuple
         return tuple(data)
-
 
 def create_entire_database():
     """
