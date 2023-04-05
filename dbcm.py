@@ -1,5 +1,13 @@
+##
+#   Group Project:  Weather Processing App
+#   Course:         ADEV-3005(234116)
+#   Group:          #10
+#   Team members:   Dean Lorenzo, Jesse Kosowan, Justin Martinez
+#   Milestone:      #2
+#
+
 import logging
-import sqlite3
+import sqlite3 
 
 class DBCM():
     """
@@ -21,10 +29,11 @@ class DBCM():
 
     def __enter__(self):
         """
-        Connects to the database.
+        Connects to the database and returns a cursor object.
         """
         try:
-            return self.conn
+            self.cursor = self.conn.cursor()
+            return self.cursor
         except Exception as exception:
             print("DBCM:__enter__:", exception)
             self.logger.error("DBCM:__enter__:%s", exception)
@@ -32,9 +41,14 @@ class DBCM():
 
     def __exit__(self, exc_type, exc_value, exc_tb):
         """
-        Closes the connection to the database.
+        Commits changes and closes the connection to the database.
         """
         try:
+            if exc_type is None:
+                self.conn.commit()
+            else:
+                self.conn.rollback()
+            self.cursor.close()
             self.conn.close()
         except Exception as exception:
             print("DBCM:__exit__:", exception)
