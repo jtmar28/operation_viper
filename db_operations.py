@@ -4,6 +4,7 @@
 #   Group:          #10
 #   Team members:   Dean Lorenzo, Jesse Kosowan, Justin Martinez
 #   Milestone:      #2
+#   Updated:        Apr 5, 2023 
 #
 
 """
@@ -110,6 +111,24 @@ class DBOperations:
         # Convert start and end dates to the correct format for the database
         start_date_formatted = datetime.strptime(start_date, '%Y-%m-%d')
         end_date_formatted = datetime.strptime(end_date, '%Y-%m-%d')
+
+        # Check to see if there are any new records that haven't been added to the 
+        # database yet
+
+        parser = WeatherDataParser()
+        
+        
+
+
+
+
+
+
+
+
+
+
+
 
         # Create an empty list to store the temperature data for each date
         data = []
