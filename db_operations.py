@@ -132,7 +132,7 @@ class DBOperations:
 
 def create_entire_database():
     """
-    This function creates the database for the first time in order to retrieve data
+    This function creates the database for the first time in order to retrieve data.
     """
     # Create a WeatherDataParser object to get the weather data
     parser = WeatherDataParser()
