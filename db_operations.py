@@ -113,7 +113,7 @@ class DBOperations:
         
     def fetch_data(self, start_date, end_date):
         """
-        This method fetches temperature data from the database for the given date range.
+        This method fetches all temperature data from the database for the given date range.
 
         Args:
             start_date (str): The start date in the format "YYYY-MM-DD".
@@ -156,6 +156,52 @@ class DBOperations:
 
         # Return the list of temperature data as a tuple
         return tuple(data)
+    
+    def fetch_mean_temp(self, start_date, end_date):
+        """
+        This method fetches all temperature data from the database for the given date range.
+
+        Args:
+            start_date (str): The start date in the format "YYYY-MM-DD".
+            end_date (str): The end date in the format "YYYY-MM-DD".
+
+        Returns:
+            tuple: A tuple containing temperature data for each date in the format
+            (date, max_temp, min_temp, mean_temp).
+        """
+
+        # Convert start and end dates to the correct format for the database
+        start_date_formatted = datetime.strptime(start_date, '%Y-%m-%d')
+        end_date_formatted = datetime.strptime(end_date, '%Y-%m-%d')
+
+        # Create an empty list to store the temperature data for each date
+        data = []
+
+        with self.cursor as cur:
+
+            # Loop through the dates and fetch the temperature data for each date
+            while start_date_formatted <= end_date_formatted:
+                sample_date = start_date_formatted.strftime('%B %d, %Y')
+
+                # Drop leading zeroes only from the day portion of the formatted date
+                sample_date = re.sub(r'(?<=\s)0', '', sample_date)
+                cur.execute("""
+                    SELECT mean_temp 
+                    FROM weather_data 
+                    WHERE sample_date = ?
+                """, (sample_date,))
+                result = cur.fetchone()
+
+                # If the temperature data for the date exists, add it to the list
+                if result:
+                    mean_temp = result
+                    data.append((sample_date, mean_temp))
+
+                # Increment the date by one day
+                start_date_formatted += timedelta(days=1)
+
+        # Return the mean list of temperature data as a tuple
+        return data
 
     def create_entire_database(self):
         """

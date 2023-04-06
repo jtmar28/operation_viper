@@ -16,7 +16,7 @@ class PlotOperations:
         # self.year_end = input("Enter an end year (YYYY): ")
 
         # hard-coded data for testing
-        self.year_start = "2015"
+        self.year_start = "2018"
         self.year_end = "2023"
 
         # get data for several years for plotting dates hardcoded for now
@@ -36,15 +36,25 @@ class PlotOperations:
         self.month_end_date = "2023-1-31"
 
         # get data for one month for plotting dates hardcoded for now
-        one_month__weather_data = db.fetch_data(self.month_start_date, self.month_end_date)
+        one_month__weather_data = db.fetch_mean_temp(self.month_start_date, self.month_end_date)
 
-        return tuple(one_month__weather_data)
+        return one_month__weather_data
     
 
 if __name__ == "__main__":
     db = DBOperations()
     plot = PlotOperations()
 
-    # pprint(plot.fetch_month_averages())
-    pprint(plot.fetch_yearly_averages())
+    month_data = plot.fetch_month_averages()
+
+    month_dates = []
+    mean_temps = []
+
+    for date, temp in month_data:
+        month_dates.append(date)
+        mean_temps.append(temp[0])
+        print(date, temp[0])
+
+    # pprint(month_data)
+    # pprint(plot.fetch_yearly_averages())
 
