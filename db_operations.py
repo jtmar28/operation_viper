@@ -4,7 +4,7 @@
 #   Group:          #10
 #   Team members:   Dean Lorenzo, Jesse Kosowan, Justin Martinez
 #   Milestone:      #2
-#   Updated:        Apr 5th, 2023 
+#   Updated:        Apr 6, 2023 
 #
 
 """
@@ -48,6 +48,9 @@ class DBOperations:
     def save_data(self, data):
         """
         Saves weather data to the database for each date in the given dictionary.
+
+        Args:
+            data (str): The data to be processed.
         """
 
         total_records_saved = 0
@@ -110,8 +113,15 @@ class DBOperations:
         
     def fetch_data(self, start_date, end_date):
         """
-        This method fetches the data from the database according to what the 
-        user inputs for the start and end dates.
+        This method fetches temperature data from the database for the given date range.
+
+        Args:
+            start_date (str): The start date in the format "YYYY-MM-DD".
+            end_date (str): The end date in the format "YYYY-MM-DD".
+
+        Returns:
+            tuple: A tuple containing temperature data for each date in the format
+            (date, max_temp, min_temp, mean_temp).
         """
 
         # Convert start and end dates to the correct format for the database
@@ -159,6 +169,7 @@ class DBOperations:
         self.initialize_db()
         self.save_data(parser.get_weather_dictionary())
         print("Entire database created and records added.")
+
     
     def update_database(self):
         """
@@ -166,43 +177,48 @@ class DBOperations:
         from the WeatherDataParser if it is more recent than the latest data 
         in the table.
         """
-
         # Get the latest date in the database
         with self.cursor as cur:
             cur.execute("""
                 SELECT sample_date
                 FROM weather_data
-                WHERE id =  (SELECT max(id)
+                WHERE id =  (SELECT max(id) 
                              FROM weather_data)
             """)            
             latest_date = cur.fetchone()[0]
-
+       
         latest_date = datetime.strptime(latest_date, '%B %d, %Y')
-        date_after_latest = (latest_date + timedelta(days=1)).strftime('%Y-%m-%d') 
+        date_after_latest = (latest_date + timedelta(days=1)).strftime('%Y-%m-%d')
+        print(f"Date after latest {date_after_latest}")        
 
         # Format date to compare to today's date
         latest_date = latest_date.strftime('%Y-%m-%d')
 
+        print(f"The newest record in the database is {latest_date}")
+            
         # Get today's date in 'YYYY-MM-DD' format
         today = datetime.now().strftime('%Y-%m-%d')
         date_before_today = (datetime.strptime(today, '%Y-%m-%d') - timedelta(days=1)).strftime('%Y-%m-%d')
+        print(f"Date before today {date_before_today}")
+
+        print(f"Today's date is {today}")
 
         # Check if the latest date in the database is older than today's date
         if latest_date < today:
             # Create a WeatherDataParser object to get the weather data
             parser = WeatherDataParser()
 
-            # Get the new data and save it to the database
+            # Get the new data and save it to the database 
             new_data = parser.check_for_new_data(date_after_latest, date_before_today)
-            self.save_data(new_data)            
+            self.save_data(new_data)           
+        else:
+            print("Database is up to date.")        
 
 if __name__ == "__main__":
     """
     This is the main function that instantiates a db object, and has
     functionality to parse initial data to the database. 
     """
-
-    # SQLite viewer url is: https://inloop.github.io/sqlite-viewer/
 
     # # Create a DBOperations object to fetch weather data from the database
     db = DBOperations()
@@ -211,13 +227,13 @@ if __name__ == "__main__":
     # Check to see if the database has as new records to add
     db.update_database()
 
-    # Prompt the user for start and end dates
-    start_date = input("Enter start date (YYYY-MM-DD): ")
-    end_date = input("Enter end date (YYYY-MM-DD): ")
+    # # Prompt the user for start and end dates
+    # start_date = input("Enter start date (YYYY-MM-DD): ")
+    # end_date = input("Enter end date (YYYY-MM-DD): ")
 
-    # Fetch data from the database for the specified date range
-    data = db.fetch_data(start_date, end_date)
+    # # Fetch data from the database for the specified date range
+    # data = db.fetch_data(start_date, end_date)
 
-    # Output data to the screen in the form of a tuple
-    pprint(data)   
+    # # Output data to the screen in the form of a tuple
+    # pprint(data)   
        
