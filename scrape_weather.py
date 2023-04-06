@@ -4,7 +4,7 @@
 #   Group:          #10
 #   Team members:   Dean Lorenzo, Jesse Kosowan, Justin Martinez
 #   Milestone:      #1
-#   Updated:        Apr 5, 2023
+#   Updated:        Apr 6, 2023
 #
 
 """
@@ -39,6 +39,12 @@ class WeatherDataParser(HTMLParser):
     def handle_starttag(self, tag, attrs):
         """
         This method searches for the appropriate div tag where the data is stored.
+
+        Args:
+            tag (str):      The name of the HTML tag.
+            attrs (list):   A list of (name, value) tuples containing the HTML 
+                            attributes and their values.
+
         """
 
         # Check if parser is inside the table and set the flag
@@ -70,6 +76,9 @@ class WeatherDataParser(HTMLParser):
         """
         This method handles the creation of the temporary current temps
         dictionary for processing daily temps.
+
+        Args:
+            data (str): The data to be processed.
         """
 
         # Check if parser is inside a temperature cell, current date is not
@@ -94,6 +103,9 @@ class WeatherDataParser(HTMLParser):
         """
         This method writes to the weather dictionary all of the corresponding
         temperatures.
+
+        Args:
+            tag(str): The name of the HTML tag being parsed. 
         """
 
         # Check if parser has exited the table and reset the flag
@@ -118,6 +130,8 @@ class WeatherDataParser(HTMLParser):
     def get_weather_dictionary(self):
         """
         This method returns the entire weather dictionary.
+
+        Returns: A dictionary called weather.
         """
 
         parser = WeatherDataParser()
@@ -152,8 +166,15 @@ class WeatherDataParser(HTMLParser):
 
     def check_for_new_data(self, start_date, end_date):
         """
-        This method parses new data from the website for all the dates
-        between the start_date and end_date parameters and prints the data line by line.
+        Parses new data from the website for all the dates between start_date and end_date.
+        Prints the data line by line.
+
+        Args:
+            start_date (str): Start date in the format "YYYY-MM-DD".
+            end_date (str): End date in the format "YYYY-MM-DD".
+
+        Returns:
+            dict: A dictionary containing the weather data for all the dates parsed.
         """
         parser = WeatherDataParser()
 
@@ -169,7 +190,8 @@ class WeatherDataParser(HTMLParser):
             # Construct the URL for the current date
             my_url = (f"https://climate.weather.gc.ca/climate_data/daily_data_e.html"
                     f"?StationID=27174&timeframe=2&StartYear={current_date.year}"
-                    f"&EndYear={current_date.year}&Day={current_date.day}&Year={current_date.year}&Month={current_date.month}")
+                    f"&EndYear={current_date.year}&Day={current_date.day}"
+                    f"&Year={current_date.year}&Month={current_date.month}")
 
             # Print a message to indicate the date being parsed
             print(f"Parsing data for {current_date.strftime('%B %d, %Y')}")
@@ -185,7 +207,8 @@ class WeatherDataParser(HTMLParser):
                 # print the weather data for that date line by line
                 for date_str in parser.weather.keys():
                     date = datetime.datetime.strptime(date_str, '%B %d, %Y').date()
-                    if start_datetime.date() <= date <= end_datetime.date() and date == current_date.date():
+                    if start_datetime.date() <= date <= end_datetime.date() \
+                        and date == current_date.date():
                         weather_data = parser.weather[date_str]
                         for key, value in weather_data.items():
                             print(f"{key}: {value}")
@@ -196,5 +219,12 @@ class WeatherDataParser(HTMLParser):
         return parser.weather    
 
 if __name__ == "__main__":
+    # Create a new instance of the WeatherDataParser class
     weather_dictionary = WeatherDataParser()
-    print(weather_dictionary.get_weather_dictionary()) 
+
+    # Call the get_weather_dictionary method to parse weather data from the
+    # website and return a dictionary containing the data for each date
+    weather_data = weather_dictionary.get_weather_dictionary()
+
+    # Print the weather data dictionary to the console
+    print(weather_data)
