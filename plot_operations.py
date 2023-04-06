@@ -45,6 +45,6 @@ if __name__ == "__main__":
     db = DBOperations()
     plot = PlotOperations()
 
-    # print(plot.fetch_month_averages())
-    print(plot.fetch_yearly_averages())
+    # pprint(plot.fetch_month_averages())
+    pprint(plot.fetch_yearly_averages())
 
