@@ -73,11 +73,9 @@ if __name__ == "__main__":
     db = DBOperations()
     plot = PlotOperations()
     
+    # check for newer temperatures and update the db if so
+    db.update_database()
+
     # fetch month data, and output the graph
     month_data = plot.fetch_month_averages()
     plot.plot_monthly_graph(month_data)
-   
-
-    # pprint(month_data)
-    # pprint(plot.fetch_yearly_averages())
-
