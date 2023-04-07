@@ -36,7 +36,8 @@ class PlotOperations:
         self.month_end_date = "2023-1-31"
 
         # get data for one month for plotting dates hardcoded for now
-        one_month__weather_data = db.fetch_mean_temp(self.month_start_date, self.month_end_date)
+        one_month__weather_data = db.fetch_mean_temp(self.month_start_date, 
+                                                     self.month_end_date)
 
         return one_month__weather_data    
 
@@ -45,7 +46,8 @@ class PlotOperations:
         Plots a line graph of the average daily temperature for a given month.
 
         Args:
-            :param month_data: A list of tuples containing daily temperature data for the month.
+            :param month_data:  A list of tuples containing daily temperature 
+                                data for the month.
         """
         month_dates = []
         mean_temps = []
@@ -53,6 +55,7 @@ class PlotOperations:
             month_dates.append(date)
             mean_temps.append(temp[0])
         
+        # pass the month_dates list and mean_temps list to the plot
         plt.plot(month_dates, mean_temps)
         plt.xlabel("Day of Month", fontsize=8)
 
