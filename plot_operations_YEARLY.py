@@ -29,6 +29,10 @@ class PlotOperations:
         new_dict = {}
         values = []
         outliers = []
+        minimum = 0
+        maximum = 0
+        mean = 0
+    
 
         for key, value in yearly_weather_data.items():
             if month in key:
@@ -47,9 +51,18 @@ class PlotOperations:
             box_top = round(mean * 0.75, 1)
             minimum = round(.75 * box_top, 1)
             maximum = round(box_bottom * 1.25, 1)
+
+        # search for outliers
+        for key, value in yearly_weather_data.items():
+            if month in key:
+                val = float(value[0])
+                if(mean > 0 and (val > maximum or val < minimum)):
+                    outliers.append(val)
+                if(mean < 0 and (val < minimum or val < maximum)):
+                    outliers.append(val)
             
         print(f"{month}: mean = {mean} box_top = {box_top} box_bottom = {box_bottom} maximum = {maximum} minimum = {minimum}")
-
+        print(f"Outliers: {outliers}")
         return yearly_weather_data
 
        
@@ -77,5 +90,5 @@ if __name__ == "__main__":
     plot = PlotOperations()
 
     # fetch average of the month of February
-    plot.fetch_monthly_year_averages('January')
+    plot.fetch_monthly_year_averages('Dec')
 
