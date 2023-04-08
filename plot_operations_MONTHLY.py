@@ -35,11 +35,11 @@ class PlotOperations:
         self.month_start_date = "2023-1-1"
         self.month_end_date = "2023-1-31"
 
-        # get data for one month for plotting dates hardcoded for now
+        # get data for one month for plotting dates hardcoded for now.
         one_month__weather_data = db.fetch_mean_temp(self.month_start_date, 
                                                      self.month_end_date)
 
-        return one_month__weather_data    
+        return one_month__weather_data     
 
     def plot_monthly_graph(self, month_data):
         """
