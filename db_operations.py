@@ -168,8 +168,7 @@ class DBOperations:
             end_date (str): The end date in the format "YYYY-MM-DD".
 
         Returns:
-            tuple: A tuple containing temperature data for each date in the format
-            (date, max_temp, min_temp, mean_temp).
+            list: Mean Temperature data for each date 
         """
 
         # Convert start and end dates to the correct format for the database
