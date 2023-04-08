@@ -29,9 +29,9 @@ class PlotOperations:
     def fetch_month_averages(self):
         # get user input
         # self.month_start_date = input("Enter a start date (YYYY-MM-DD): ")
-        # self.month_end_date = input("Enter an end date (YYYY-MM-DD): " )
+        # self.month_end_date = input("Enter an end date (YYYY-MM-DD): ")
         
-        # hard-coded data for testing
+        # hard-coded data for testing, remains in code 
         self.month_start_date = "2023-1-1"
         self.month_end_date = "2023-1-31"
 
