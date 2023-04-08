@@ -74,7 +74,9 @@ class DBOperations:
                     existing_data = cur.fetchone()
 
                     if existing_data:
-                        print(f"Data already exists for {sample_date}. Skipping...")
+                        pass
+                        # used for debugging
+                        # print(f"Data already exists for {sample_date}. Skipping...")
                     else:
                         try:
                             cur.execute("""
@@ -97,7 +99,7 @@ class DBOperations:
                             print(f"Error inserting data for {sample_date}: {e}")
 
         if(total_records_saved == 0):
-            print(f"The database is up to date as of {datetime.now().strftime('%Y-%m-%d')}")
+            print(f"The database is up to date as of {datetime.now().strftime('%Y-%m-%d')}. No new recoards added.")
         else:    
             print(f"{total_records_saved} records saved to the database.")
 
@@ -235,17 +237,22 @@ class DBOperations:
        
         latest_date = datetime.strptime(latest_date, '%B %d, %Y')
         date_after_latest = (latest_date + timedelta(days=1)).strftime('%Y-%m-%d')
-        print(f"Date after latest {date_after_latest}")        
+
+        # the following line is used for debugging
+        # print(f"Date after latest {date_after_latest}")        
 
         # Format date to compare to today's date
         latest_date = latest_date.strftime('%Y-%m-%d')
 
-        print(f"The newest record in the database is {latest_date}")
+        # used for debugging
+        # print(f"The newest record in the database is {latest_date}")
             
         # Get today's date in 'YYYY-MM-DD' format
         today = datetime.now().strftime('%Y-%m-%d')
         date_before_today = (datetime.strptime(today, '%Y-%m-%d') - timedelta(days=1)).strftime('%Y-%m-%d')
-        print(f"Date before today {date_before_today}")
+        
+        # used for debugging
+        # print(f"Date before today {date_before_today}")
 
         print(f"Today's date is {today}")
 
