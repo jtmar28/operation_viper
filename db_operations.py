@@ -21,7 +21,8 @@ from scrape_weather import WeatherDataParser
 class DBOperations:
     def __init__(self):
         """
-        This constructor creates a connection and cursor for the database.
+        Initializes an instance of the class with the following instance variables:
+        - cursor: an instance of the DBCM class
         """
 
         self.cursor = DBCM("weather_database.sqlite")        
@@ -161,7 +162,8 @@ class DBOperations:
     
     def fetch_mean_temp(self, start_date, end_date):
         """
-        This method fetches all temperature data from the database for the given date range.
+        This method fetches mean temperature data from the database for the 
+        given date range.
 
         Args:
             start_date (str): The start date in the format "YYYY-MM-DD".
@@ -184,7 +186,7 @@ class DBOperations:
             while start_date_formatted <= end_date_formatted:
                 sample_date = start_date_formatted.strftime('%B %d, %Y')
 
-                # Drop leading zeroes only from the day portion of the formatted date
+                # Drop leading zeroes only from the day portion of formatted date
                 sample_date = re.sub(r'(?<=\s)0', '', sample_date)
                 cur.execute("""
                     SELECT mean_temp 
@@ -201,7 +203,7 @@ class DBOperations:
                 # Increment the date by one day
                 start_date_formatted += timedelta(days=1)
 
-        # Return the mean list of temperature data as a tuple
+        # Return the mean list of temperature data list
         return data
 
     def create_entire_database(self):
@@ -224,6 +226,7 @@ class DBOperations:
         from the WeatherDataParser if it is more recent than the latest data 
         in the table.
         """
+
         # Get the latest date in the database
         with self.cursor as cur:
             cur.execute("""
@@ -278,6 +281,9 @@ if __name__ == "__main__":
 
     # Check to see if the database has as new records to add
     db.update_database()
+
+
+    # *** the following code was used for debugging only
 
     # # Prompt the user for start and end dates
     # start_date = input("Enter start date (YYYY-MM-DD): ")
