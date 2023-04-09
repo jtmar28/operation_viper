@@ -1,7 +1,7 @@
-import matplotlib.pyplot as plt
-import numpy as np
+import matplotlib.pyplot as plt 
 from db_operations import DBOperations
 from pprint import pprint
+import pandas as pd
 
 class PlotOperations:
     def __init__(self):
@@ -62,7 +62,7 @@ class PlotOperations:
         # Rotate x-axis labels by 45 degrees
         plt.xticks(rotation=45, fontsize=4)
         
-         # set font size of y-axis label  
+        # set font size of y-axis label  
         plt.ylabel("Average Daily Temperature", fontsize=8)  
         plt.yticks(fontsize=4)   
         plt.title("Daily AVG Temperatures", fontsize=8)   
