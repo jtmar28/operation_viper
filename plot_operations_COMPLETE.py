@@ -4,15 +4,33 @@ from datetime import datetime
 
 class PlotOperations:
     def __init__(self):
+        """
+        Initializes an instance of the class with the following instance variables:
+        - year_start: a string representing the start year
+        - year_end: a string representing the end year
+        - month_start_date: a string representing the start date of the month
+        - month_end_date: a string representing the end date of the month
+        - db: an instance of the DBOperations class
+        """
+
         self.year_start = ""
         self.year_end = ""
         self.month_start_date = ""
         self.month_end_date = ""
-
-        #instantiate a DBOperations object
         self.db = DBOperations()
 
     def fetch_monthly_year_averages(self, month, year_start_date, year_end_date):
+        """
+        Fetches the monthly year averages for a given month within a given date range.
+        
+        Args:
+        - month: a string representing the month (e.g., "January", "February", etc.)
+        - year_start_date: a string representing the start date of the year in YYYY-MM-DD format
+        - year_end_date: a string representing the end date of the year in YYYY-MM-DD format
+        
+        Returns:
+        - A list of the monthly year averages for the given month within the given date range
+        """
         
         # converts the data to a dictionary of mean temps
         yearly_weather_data = dict(self.db.fetch_mean_temp(year_start_date, year_end_date))
@@ -26,10 +44,18 @@ class PlotOperations:
 
         # Create a list of the values in new_dict
         values = list(new_dict.values())   
-    
+
         return values
-    
+
     def plot_yearly_graph(self):
+        """
+        Plots a boxplot of the monthly temperature distributions for a given year range.
+
+        Prompts the user to enter a start year and an end year, and retrieves the average
+        monthly temperature data for each month within the year range from the database.
+        The temperature data for each month is then plotted as a boxplot.
+        """
+
         # list to store all of the mean data for each month within the year range
         month_data_list = []
 
@@ -63,19 +89,25 @@ class PlotOperations:
         plt.show()  
 
     def fetch_month_averages(self):
+        """
+        Fetches the average daily temperature data for a given month.
+
+        Prompts the user to enter a start date and an end date for the month, and
+        retrieves the average daily temperature data for that month from the database.
+
+        Returns:
+            A list of tuples containing daily temperature data for the month.
+        """
+
         # get user input
         self.month_start_date = input("Enter a start date (YYYY-MM-DD): ")
-        self.month_end_date = input("Enter an end date (YYYY-MM-DD): ")
-        
-        # hard-coded data for testing, remains in code 
-        # self.month_start_date = "2023-1-1"
-        # self.month_end_date = "2023-1-31"
+        self.month_end_date = input("Enter an end date (YYYY-MM-DD): ") 
 
         # get data for one month for plotting dates hardcoded for now.
         one_month__weather_data = self.db.fetch_mean_temp(self.month_start_date, 
                                                      self.month_end_date)
 
-        return one_month__weather_data     
+        return one_month__weather_data
 
     def plot_monthly_graph(self, month_data):
         """
@@ -110,9 +142,9 @@ class PlotOperations:
 
 if __name__ == "__main__":
     """
-    Main function instantiates a DBOperations object, and two PlotOperations
-    objects one for a monthly plot, and a yearly plot. After aggregating
-    data, the graphs output to the screee one at a time.
+    Main function instantiates two PlotOperations objects one for a monthly 
+    plot, and a yearly plot. After aggregating data, the graphs output to the 
+    screen one at a time.
     """
     
     plot_monthly = PlotOperations()
