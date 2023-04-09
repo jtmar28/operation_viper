@@ -3,7 +3,6 @@ import numpy as np
 from db_operations import DBOperations
 from pprint import pprint
 from datetime import datetime
-import statistics
 
 class PlotOperations:
     def __init__(self):
@@ -18,57 +17,25 @@ class PlotOperations:
         # self.year_end = input("Enter an end year (YYYY): ")
 
         # hard-coded data for testing
-        self.year_start = "2020"
-        self.year_end = "2023"
+        self.year_start = "2000"
+        self.year_end = "2017"
 
         # get data for several years for plotting dates hardcoded for now
         year_start_date = f"{self.year_start}-1-1"
         year_end_date = f"{self.year_end}-12-31"
         yearly_weather_data = dict(db.fetch_mean_temp(year_start_date, year_end_date))
-
-        new_dict = {}
-        values = []
-        outliers = []
-        minimum = 0
-        maximum = 0
-        mean = 0
     
-
+        new_dict = {}
+        values = [] 
         for key, value in yearly_weather_data.items():
-            if month in key:
+            if month in key:                
                 values.append(float(value[0]))
                 new_dict[key] = values[-1]
 
-        # accuracy to 1 decimal point        
-        mean = round(statistics.mean(values), 1)
-        if (mean > 0):
-            box_top = round(mean * 1.25, 1)
-            box_bottom = round(mean * 0.75, 1)
-            maximum = round(1.25 * box_top, 1)
-            minimum = round(box_bottom * 0.75, 1)
-        else:
-            box_bottom = round(mean * 1.25, 1)
-            box_top = round(mean * 0.75, 1)
-            minimum = round(.75 * box_top, 1)
-            maximum = round(box_bottom * 1.25, 1)
-
-        # search for outliers
-        for key, value in yearly_weather_data.items():
-            if month in key:
-                val = float(value[0])
-                if(mean > 0 and (val > maximum or val < minimum)):
-                    outliers.append(val)
-                if(mean < 0 and (val < minimum or val < maximum)):
-                    outliers.append(val)
-            
-        print(f"{month}: mean = {mean} box_top = {box_top} box_bottom = {box_bottom} maximum = {maximum} minimum = {minimum}")
-        print(f"Outliers: {outliers}")
-        return yearly_weather_data
-
-       
- 
-
-
+        # Create a list of the values in new_dict
+        values = list(new_dict.values())   
+    
+        return values
 
     def fetch_month_averages(self):
         # get user input
@@ -90,5 +57,26 @@ if __name__ == "__main__":
     plot = PlotOperations()
 
     # fetch average of the month of February
-    plot.fetch_monthly_year_averages('Dec')
+
+    month_data_list = []
+    
+    for i in range(1, 13):
+        # Create a datetime object with year 1900, month i, and day 1
+        date_obj = datetime(1900, i, 1)
+        # Format the date object to a string in the %B format
+        month_name = date_obj.strftime("%B")
+        values = plot.fetch_monthly_year_averages(month_name) 
+        month_data_list.append(values)
+ 
+    # Create a boxplot of the values
+    plt.boxplot(month_data_list )
+    # plt.boxplot(month_data_list, showmeans=True, meanline=True)
+
+    # Add a title and labels for the axes
+    plt.title(f'Monthly Temperature Distribution for: {plot.year_start} to {plot.year_end}')
+    plt.xlabel('Month')
+    plt.ylabel('Temperature (Celsius)')
+
+    # Show the plot
+    plt.show() 
 
