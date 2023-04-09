@@ -99,7 +99,7 @@ class DBOperations:
                             print(f"Error inserting data for {sample_date}: {e}")
 
         if(total_records_saved == 0):
-            print(f"The database is up to date as of {datetime.now().strftime('%Y-%m-%d')}. No new recoards added.")
+            print(f"The database is up to date as of {datetime.now().strftime('%Y-%m-%d')}. No new records added.")
         else:    
             print(f"{total_records_saved} records saved to the database.")
 
