@@ -270,4 +270,8 @@ if __name__ == "__main__":
 
     # Check to see if the database has as new records to add
     db.update_database()
+<<<<<<< HEAD
        
+=======
+       
+>>>>>>> fec1250f77c7c15c52102cf92989fc901ee1ac38
