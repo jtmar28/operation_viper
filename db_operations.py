@@ -8,9 +8,10 @@
 #
 
 """
-This module adds functionality to the Weather App but managing database data
+This module adds functionality to the Weather App by managing database data
 that is parsed from the scrape_weather module.
 """
+
 from datetime import datetime, timedelta
 from pprint import pprint
 import re
@@ -135,7 +136,6 @@ class DBOperations:
         data = []
 
         with self.cursor as cur:
-
             # Loop through the dates and fetch the temperature data for each date
             while start_date_formatted <= end_date_formatted:
                 sample_date = start_date_formatted.strftime('%B %d, %Y')
@@ -181,7 +181,6 @@ class DBOperations:
         data = []
 
         with self.cursor as cur:
-
             # Loop through the dates and fetch the temperature data for each date
             while start_date_formatted <= end_date_formatted:
                 sample_date = start_date_formatted.strftime('%B %d, %Y')
@@ -218,7 +217,6 @@ class DBOperations:
         self.initialize_db()
         self.save_data(parser.get_weather_dictionary())
         print("Entire database created and records added.")
-
     
     def update_database(self):
         """
@@ -240,22 +238,13 @@ class DBOperations:
         latest_date = datetime.strptime(latest_date, '%B %d, %Y')
         date_after_latest = (latest_date + timedelta(days=1)).strftime('%Y-%m-%d')
 
-        # the following line is used for debugging
-        # print(f"Date after latest {date_after_latest}")        
-
         # Format date to compare to today's date
         latest_date = latest_date.strftime('%Y-%m-%d')
-
-        # used for debugging
-        # print(f"The newest record in the database is {latest_date}")
             
         # Get today's date in 'YYYY-MM-DD' format
         today = datetime.now().strftime('%Y-%m-%d')
         date_before_today = (datetime.strptime(today, '%Y-%m-%d') - timedelta(days=1)).strftime('%Y-%m-%d')
-        
-        # used for debugging
-        # print(f"Date before today {date_before_today}")
-
+  
         print(f"Today's date is {today}")
 
         # Check if the latest date in the database is older than today's date
@@ -281,17 +270,4 @@ if __name__ == "__main__":
 
     # Check to see if the database has as new records to add
     db.update_database()
-
-
-    # *** the following code was used for debugging only
-
-    # # Prompt the user for start and end dates
-    # start_date = input("Enter start date (YYYY-MM-DD): ")
-    # end_date = input("Enter end date (YYYY-MM-DD): ")
-
-    # # Fetch data from the database for the specified date range
-    # data = db.fetch_data(start_date, end_date)
-
-    # # Output data to the screen in the form of a tuple
-    # pprint(data)   
        
