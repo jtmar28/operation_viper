@@ -8,9 +8,10 @@
 #
 
 """
-This module adds functionality to the Weather App but managing database data
+This module adds functionality to the Weather App by managing database data
 that is parsed from the scrape_weather module.
 """
+
 from datetime import datetime, timedelta
 from pprint import pprint
 import re
