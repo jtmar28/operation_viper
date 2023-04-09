@@ -18,19 +18,17 @@ class PlotOperations:
 
         # hard-coded data for testing
         self.year_start = "2000"
-        self.year_end = "2017"
+        self.year_end = "2010"
 
         # get data for several years for plotting dates hardcoded for now
         year_start_date = f"{self.year_start}-1-1"
         year_end_date = f"{self.year_end}-12-31"
         yearly_weather_data = dict(db.fetch_mean_temp(year_start_date, year_end_date))
-    
-        new_dict = {}
+     
         values = [] 
         for key, value in yearly_weather_data.items():
             if month in key:                
-                values.append(float(value[0]))
-                new_dict[key] = values[-1]
+                values.append(float(value[0])) 
 
         # Create a list of the values in new_dict
         values = list(new_dict.values())   
