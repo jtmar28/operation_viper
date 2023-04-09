@@ -26,5 +26,4 @@ class DBCM:
         else:
             self.connection.rollback()
         self.cursor.close()
-        self.connection.close()
-        
+        self.connection.close()        
