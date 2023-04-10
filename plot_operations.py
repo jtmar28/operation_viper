@@ -1,68 +1,176 @@
+##
+#   Group Project:  Weather Processing App
+#   Course:         ADEV-3005(234116)
+#   Group:          #10
+#   Team members:   Dean Lorenzo, Jesse Kosowan, Justin Martinez
+#   Milestone:      #3
+#   Updated:        Apr 9, 2023 
+#
+
 import matplotlib.pyplot as plt
-import numpy as np
 from db_operations import DBOperations
-from pprint import pprint
 from datetime import datetime
+
+"""
+This module adds functionality to the Weather App by outputting graphical data
+to the screen.
+"""
 
 class PlotOperations:
     def __init__(self):
+        """
+        Initializes an instance of the class with the following instance variables:
+        - year_start: a string representing the start year
+        - year_end: a string representing the end year
+        - month_start_date: a string representing the start date of the month
+        - month_end_date: a string representing the end date of the month
+        - db: an instance of the DBOperations class
+        """
+
         self.year_start = ""
         self.year_end = ""
         self.month_start_date = ""
         self.month_end_date = ""
+        self.db = DBOperations()
 
-    def fetch_yearly_averages(self):
+    def fetch_monthly_year_averages(self, month, year_start_date, year_end_date):
+        """
+        Fetches the monthly year averages for a given month within a given date range.
+        
+        Args:
+        - month: a string representing the month (e.g., "January", "February", etc.)
+        - year_start_date: a string representing the start date of the year in YYYY-MM-DD format
+        - year_end_date: a string representing the end date of the year in YYYY-MM-DD format
+        
+        Returns:
+        - A list of the monthly year averages for the given month within the given date range
+        """
+        
+        # converts the data to a dictionary of mean temps
+        yearly_weather_data = dict(self.db.fetch_mean_temp(year_start_date, year_end_date))
+    
+        new_dict = {}
+        values = [] 
+        for key, value in yearly_weather_data.items():
+            if month in key:                
+                values.append(float(value[0]))
+                new_dict[key] = values[-1]
+
+        # Create a list of the values in new_dict
+        values = list(new_dict.values())   
+
+        return values
+
+    def plot_yearly_graph(self):
+        """
+        Plots a boxplot of the monthly temperature distributions for a given year range.
+
+        Prompts the user to enter a start year and an end year, and retrieves the average
+        monthly temperature data for each month within the year range from the database.
+        The temperature data for each month is then plotted as a boxplot.
+        """
+
+        # list to store all of the mean data for each month within the year range
+        month_data_list = []
+
         # get user input
-        # self.year_start = input("Enter a start year (YYYY): ")
-        # self.year_end = input("Enter an end year (YYYY): ")
+        self.year_start = input("Enter a start year (YYYY): ")
+        self.year_end = input("Enter an end year (YYYY): ")
 
-        # hard-coded data for testing
-        self.year_start = "2015"
-        self.year_end = "2023"
+        print("Processing yearly graph...")
 
         # get data for several years for plotting dates hardcoded for now
-        year_start_date = f"{self.year_start}-1-1"
-        year_end_date = f"{self.year_end}-12-31"
-        yearly_weather_data = db.fetch_data(year_start_date, year_end_date)
+        start_date = f"{self.year_start}-1-1"
+        end_date = f"{self.year_end}-12-31"
+        
+        for i in range(1, 13):
+            # Create a datetime object with year 1900, month i, and day 1
+            date_obj = datetime(1900, i, 1)
 
-        # return tuple(yearly_weather_data)
+            # Format the date object to a string in the %B format
+            month_name = date_obj.strftime("%B")
+            values = self.fetch_monthly_year_averages(month_name, start_date, end_date) 
+            month_data_list.append(values)
 
-        # create a dictionary of lists
-        # the dictionary key will be the month
-        # the data in the list will be the mean temp for each day of that month
-        weather_data = {} # initialize weather data dictionary
-        # loop over each month ranging from 1-12
-        for month in range(1, 13):
-            # for each month, initialize a new month_data list
-            # data[3] is the fourth element of the data tuple (mean temp).
-            # the if statement checks if the month of the date in data[0] is equal to the month variable.
-            # if it is... data[3] (the mean temp) is added to the list for that month.
-            month_data = [data[3] for data in yearly_weather_data if datetime.strptime(data[0], '%B %d, %Y').month == month]
-            weather_data[month] = month_data # add this loops month key-value pair to the dictionary.
+        plt.boxplot(month_data_list ) 
 
-        return weather_data
+        # Add a title and labels for the axes
+        plt.title(f'Monthly Temperature Distribution for: {self.year_start} to {self.year_end}')
+        plt.xlabel('Month')
+        plt.ylabel('Temperature (Celsius)')
 
-
+        # Show the plot
+        plt.show()  
 
     def fetch_month_averages(self):
+        """
+        Fetches the average daily temperature data for a given month.
+
+        Prompts the user to enter a start date and an end date for the month, and
+        retrieves the average daily temperature data for that month from the database.
+
+        Returns:
+            A list of tuples containing daily temperature data for the month.
+        """
+
         # get user input
-        # self.month_start_date = input("Enter a start date (YYYY-MM-DD): ")
-        # self.month_end_date = input("Enter an end date (YYYY-MM-DD): " )
+        self.month_start_date = input("Enter a start date (YYYY-MM-DD): ")
+        self.month_end_date = input("Enter an end date (YYYY-MM-DD): ") 
 
-        # hard-coded data for testing
-        self.month_start_date = "2023-1-1"
-        self.month_end_date = "2023-1-31"
+        # get data for one month for plotting dates hardcoded for now.
+        one_month__weather_data = self.db.fetch_mean_temp(self.month_start_date, 
+                                                     self.month_end_date)
 
-        # get data for one month for plotting dates hardcoded for now
-        one_month__weather_data = db.fetch_data(self.month_start_date, self.month_end_date)
+        return one_month__weather_data
 
-        return tuple(one_month__weather_data)
+    def plot_monthly_graph(self, month_data):
+        """
+        Plots a line graph of the average daily temperature for a given month.
 
+        Args:
+            :param month_data:  A list of tuples containing daily temperature 
+                                data for the month.
+        """
+
+        print("Processing monthly graph...")
+
+        month_dates = []
+        mean_temps = []
+        for date, temp in month_data:
+            month_dates.append(date)
+            mean_temps.append(temp[0])
+        
+        # pass the month_dates list and mean_temps list to the plot
+        plt.plot(month_dates, mean_temps)
+        plt.xlabel("Day of Month", fontsize=8)
+
+        # Rotate x-axis labels by 45 degrees
+        plt.xticks(rotation=45, fontsize=4)
+        
+        # set font size of y-axis label  
+        plt.ylabel("Average Daily Temperature", fontsize=8)  
+        plt.yticks(fontsize=4)   
+        plt.title("Daily AVG Temperatures", fontsize=8)   
+        plt.grid(True)  
+        plt.show()
 
 if __name__ == "__main__":
-    db = DBOperations()
-    plot = PlotOperations()
+    """
+    Main function instantiates two PlotOperations objects one for a monthly 
+    plot, and a yearly plot. After aggregating data, the graphs output to the 
+    screen one at a time.
+    """
+    
+    plot_monthly = PlotOperations()
+    plot_yearly = PlotOperations()
 
-    # pprint(plot.fetch_month_averages())
-    pprint(plot.fetch_yearly_averages())
+    # check for newer temperatures and update the db if so
+    plot_monthly.db.update_database()
 
+    # fetch yearly data, and output graph
+    plot_yearly.plot_yearly_graph()
+
+    # fetch month data, and output the graph
+    month_data = plot_monthly.fetch_month_averages()
+    plot_monthly.plot_monthly_graph(month_data)
+        
