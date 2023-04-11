@@ -104,13 +104,15 @@ class PlotOperations:
 
             # Format the date object to a string in the %B format
             month_name = date_obj.strftime("%B")
-            values = self.fetch_monthly_year_averages(month_name, start_date, end_date) 
+            values = self.fetch_monthly_year_averages \
+                (month_name, start_date, end_date) 
             month_data_list.append(values)
 
         plt.boxplot(month_data_list ) 
 
         # Add a title and labels for the axes
-        plt.title(f'Monthly Temperature Distribution for: {self.year_start} to {self.year_end}')
+        plt.title(f'Monthly Temperature Distribution for: '
+                  f'{self.year_start} to {self.year_end}')
         plt.xlabel('Month')
         plt.ylabel('Temperature (Celsius)')
 
@@ -121,8 +123,9 @@ class PlotOperations:
         """
         Fetches the average daily temperature data for a given month.
 
-        Prompts the user to enter a start date and an end date for the month, and
-        retrieves the average daily temperature data for that month from the database.
+        Prompts the user to enter a start date and an end date for the month, 
+        and retrieves the average daily temperature data for that month from
+        the database.
 
         Returns:
             A list of tuples containing daily temperature data for the month.
@@ -132,19 +135,20 @@ class PlotOperations:
         while True:
             self.month_start_date = input("Enter a start date (YYYY-MM-DD): ")
             try:
-                datetime.datetime.strptime(self.month_start_date, '%Y-%m-%d')
+                datetime.strptime(self.month_start_date, '%Y-%m-%d')
                 break
             except ValueError:
-                print("Invalid input! Please enter a valid date in the format YYYY-MM-DD.")
+                print("Invalid input! Please enter a valid date in the format "
+                      "YYYY-MM-DD.")
 
         while True:
             self.month_end_date = input("Enter an end date (YYYY-MM-DD): ")
             try:
-                datetime.datetime.strptime(self.month_end_date, '%Y-%m-%d')
+                datetime.strptime(self.month_end_date, '%Y-%m-%d')
                 break
             except ValueError:
-                print("Invalid input! Please enter a valid date in the format YYYY-MM-DD.")
-
+                print("Invalid input! Please enter a valid date in the format "
+                      "YYYY-MM-DD.")
 
         # get data for one month for plotting dates hardcoded for now.
         one_month__weather_data = self.db.fetch_mean_temp(self.month_start_date, 
@@ -201,4 +205,4 @@ if __name__ == "__main__":
 
     # fetch month data, and output the graph
     month_data = plot_monthly.fetch_month_averages()
-    plot_monthly.plot_monthly_graph(month_data)
+    plot_monthly.plot_monthly_graph(month_data)        
