@@ -94,7 +94,6 @@ class DBOperations:
                                 max_temp,
                                 min_temp,
                                 mean_temp))
-                            cur.connection.commit()
                             print(f"Data saved for {sample_date}")
                             total_records_saved += 1
                         except sqlite3.Error as e:
@@ -269,9 +268,4 @@ if __name__ == "__main__":
     # db.create_entire_database()
 
     # Check to see if the database has as new records to add
-    db.update_database()
-<<<<<<< HEAD
-       
-=======
-       
->>>>>>> fec1250f77c7c15c52102cf92989fc901ee1ac38
+    db.update_database()       
