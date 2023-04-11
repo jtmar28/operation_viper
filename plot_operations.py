@@ -43,16 +43,17 @@ class PlotOperations:
         - year_end_date: a string representing the end date of the year in YYYY-MM-DD format
         
         Returns:
-        - A list of the monthly year averages for the given month within the given date range
+        - A list of the monthly year averages for the given month within the given date range20
         """
         
         # converts the data to a dictionary of mean temps
         yearly_weather_data = dict(self.db.fetch_mean_temp(year_start_date, year_end_date))
-    
+   
         new_dict = {}
         values = [] 
         for key, value in yearly_weather_data.items():
-            if month in key:                
+            # compare the 2-digit string month to the key's 2-digit string month
+            if month in key[5:7]:                
                 values.append(float(value[0]))
                 new_dict[key] = values[-1]
 
@@ -94,7 +95,7 @@ class PlotOperations:
 
         print("Processing yearly graph...")
 
-        # get data for several years for plotting dates hardcoded for now
+        # get data for several years for plotting dates
         start_date = f"{self.year_start}-1-1"
         end_date = f"{self.year_end}-12-31"
         
@@ -102,13 +103,13 @@ class PlotOperations:
             # Create a datetime object with year 1900, month i, and day 1
             date_obj = datetime(1900, i, 1)
 
-            # Format the date object to a string in the %B format
-            month_name = date_obj.strftime("%B")
+            # Format the date object to a string in the 'MM' format
+            month = date_obj.strftime("%m")
             values = self.fetch_monthly_year_averages \
-                (month_name, start_date, end_date) 
+                (month, start_date, end_date) 
             month_data_list.append(values)
 
-        plt.boxplot(month_data_list ) 
+        plt.boxplot(month_data_list) 
 
         # Add a title and labels for the axes
         plt.title(f'Monthly Temperature Distribution for: '
@@ -204,5 +205,5 @@ if __name__ == "__main__":
     plot_yearly.plot_yearly_graph()
 
     # fetch month data, and output the graph
-    month_data = plot_monthly.fetch_month_averages()
-    plot_monthly.plot_monthly_graph(month_data)        
+    # month_data = plot_monthly.fetch_month_averages()
+    # plot_monthly.plot_monthly_graph(month_data)        
