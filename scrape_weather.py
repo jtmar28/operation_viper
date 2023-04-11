@@ -4,7 +4,7 @@
 #   Group:          #10
 #   Team members:   Dean Lorenzo, Jesse Kosowan, Justin Martinez
 #   Milestone:      #1
-#   Updated:        Apr 6, 2023
+#   Updated:        Apr 11, 2023
 #
 
 """
@@ -44,7 +44,6 @@ class WeatherDataParser(HTMLParser):
             tag (str):      The name of the HTML tag.
             attrs (list):   A list of (name, value) tuples containing the HTML 
                             attributes and their values.
-
         """
 
         # Check if parser is inside the table and set the flag
@@ -59,9 +58,11 @@ class WeatherDataParser(HTMLParser):
         elif tag == "abbr" and self.in_date_cell:
             for name, value in attrs:
                 if name == "title":
-                    self.current_date = value
-                    self.current_temps = {}
-
+                    try:
+                        self.current_date = value
+                        self.current_temps = {}
+                    except:
+                        pass
         # Check if parser is inside a temperature cell and set the flag
         elif tag == "td" and self.current_temps is not None:
             self.in_temp_cell = True
@@ -119,6 +120,9 @@ class WeatherDataParser(HTMLParser):
             # add to weather data
             if self.current_date is not None and self.current_date \
                 not in ["kilometres per hour", "Average", "Extreme"]:
+                formattedDate = datetime.datetime.strptime(self.current_date, '%B %d, %Y')
+                stringDate = formattedDate.strftime('%Y-%m-%d')
+                self.current_date = stringDate
                 self.weather[self.current_date] = self.current_temps
                 self.current_date = None
                 self.current_temps = None
