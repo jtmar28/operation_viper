@@ -4,7 +4,7 @@
 #   Group:          #10
 #   Team members:   Dean Lorenzo, Jesse Kosowan, Justin Martinez
 #   Milestone:      #3
-#   Updated:        Apr 9, 2023 
+#   Updated:        Apr 11, 2023 
 #
 
 import matplotlib.pyplot as plt
@@ -73,9 +73,24 @@ class PlotOperations:
         # list to store all of the mean data for each month within the year range
         month_data_list = []
 
-        # get user input
-        self.year_start = input("Enter a start year (YYYY): ")
-        self.year_end = input("Enter an end year (YYYY): ")
+        # get user input and validate
+        while True:
+            try:
+                self.year_start = int(input("Enter a start year (YYYY): "))
+                if len(str(self.year_start)) != 4:
+                    raise ValueError
+                break
+            except ValueError:
+                print("Invalid input! Please enter a valid 4-digit year.")
+
+        while True:
+            try:
+                self.year_end = int(input("Enter an end year (YYYY): "))
+                if len(str(self.year_end)) != 4:
+                    raise ValueError
+                break
+            except ValueError:
+                print("Invalid input! Please enter a valid 4-digit year.")
 
         print("Processing yearly graph...")
 
@@ -89,13 +104,15 @@ class PlotOperations:
 
             # Format the date object to a string in the %B format
             month_name = date_obj.strftime("%B")
-            values = self.fetch_monthly_year_averages(month_name, start_date, end_date) 
+            values = self.fetch_monthly_year_averages \
+                (month_name, start_date, end_date) 
             month_data_list.append(values)
 
         plt.boxplot(month_data_list ) 
 
         # Add a title and labels for the axes
-        plt.title(f'Monthly Temperature Distribution for: {self.year_start} to {self.year_end}')
+        plt.title(f'Monthly Temperature Distribution for: '
+                  f'{self.year_start} to {self.year_end}')
         plt.xlabel('Month')
         plt.ylabel('Temperature (Celsius)')
 
@@ -106,16 +123,32 @@ class PlotOperations:
         """
         Fetches the average daily temperature data for a given month.
 
-        Prompts the user to enter a start date and an end date for the month, and
-        retrieves the average daily temperature data for that month from the database.
+        Prompts the user to enter a start date and an end date for the month, 
+        and retrieves the average daily temperature data for that month from
+        the database.
 
         Returns:
             A list of tuples containing daily temperature data for the month.
         """
 
-        # get user input
-        self.month_start_date = input("Enter a start date (YYYY-MM-DD): ")
-        self.month_end_date = input("Enter an end date (YYYY-MM-DD): ") 
+        # get user input and validate
+        while True:
+            self.month_start_date = input("Enter a start date (YYYY-MM-DD): ")
+            try:
+                datetime.strptime(self.month_start_date, '%Y-%m-%d')
+                break
+            except ValueError:
+                print("Invalid input! Please enter a valid date in the format "
+                      "YYYY-MM-DD.")
+
+        while True:
+            self.month_end_date = input("Enter an end date (YYYY-MM-DD): ")
+            try:
+                datetime.strptime(self.month_end_date, '%Y-%m-%d')
+                break
+            except ValueError:
+                print("Invalid input! Please enter a valid date in the format "
+                      "YYYY-MM-DD.")
 
         # get data for one month for plotting dates hardcoded for now.
         one_month__weather_data = self.db.fetch_mean_temp(self.month_start_date, 
