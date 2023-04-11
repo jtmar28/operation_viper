@@ -4,7 +4,7 @@
 #   Group:          #10
 #   Team members:   Dean Lorenzo, Jesse Kosowan, Justin Martinez
 #   Milestone:      #3
-#   Updated:        Apr 9, 2023 
+#   Updated:        Apr 11, 2023 
 #
 
 import matplotlib.pyplot as plt
