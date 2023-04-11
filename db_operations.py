@@ -234,7 +234,10 @@ class DBOperations:
             """)            
             latest_date = cur.fetchone()[0]
        
+        # Parse the latest date string to a date time object
         latest_date = datetime.strptime(latest_date, '%B %d, %Y')
+
+        # Find difference between latest entry in in the db and select the day after
         date_after_latest = (latest_date + timedelta(days=1)).strftime('%Y-%m-%d')
 
         # Format date to compare to today's date
@@ -263,7 +266,7 @@ if __name__ == "__main__":
     functionality to parse initial data to the database. 
     """
 
-    # # Create a DBOperations object to fetch weather data from the database
+    # Create a DBOperations object to fetch weather data from the database
     db = DBOperations()
     # db.create_entire_database()
 
