@@ -73,9 +73,24 @@ class PlotOperations:
         # list to store all of the mean data for each month within the year range
         month_data_list = []
 
-        # get user input
-        self.year_start = input("Enter a start year (YYYY): ")
-        self.year_end = input("Enter an end year (YYYY): ")
+        # get user input and validate
+        while True:
+            try:
+                self.year_start = int(input("Enter a start year (YYYY): "))
+                if len(str(self.year_start)) != 4:
+                    raise ValueError
+                break
+            except ValueError:
+                print("Invalid input! Please enter a valid 4-digit year.")
+
+        while True:
+            try:
+                self.year_end = int(input("Enter an end year (YYYY): "))
+                if len(str(self.year_end)) != 4:
+                    raise ValueError
+                break
+            except ValueError:
+                print("Invalid input! Please enter a valid 4-digit year.")
 
         print("Processing yearly graph...")
 
@@ -113,9 +128,23 @@ class PlotOperations:
             A list of tuples containing daily temperature data for the month.
         """
 
-        # get user input
-        self.month_start_date = input("Enter a start date (YYYY-MM-DD): ")
-        self.month_end_date = input("Enter an end date (YYYY-MM-DD): ") 
+        # get user input and validate
+        while True:
+            self.month_start_date = input("Enter a start date (YYYY-MM-DD): ")
+            try:
+                datetime.datetime.strptime(self.month_start_date, '%Y-%m-%d')
+                break
+            except ValueError:
+                print("Invalid input! Please enter a valid date in the format YYYY-MM-DD.")
+
+        while True:
+            self.month_end_date = input("Enter an end date (YYYY-MM-DD): ")
+            try:
+                datetime.datetime.strptime(self.month_end_date, '%Y-%m-%d')
+                break
+            except ValueError:
+                print("Invalid input! Please enter a valid date in the format YYYY-MM-DD.")
+
 
         # get data for one month for plotting dates hardcoded for now.
         one_month__weather_data = self.db.fetch_mean_temp(self.month_start_date, 
@@ -145,7 +174,7 @@ class PlotOperations:
         plt.xlabel("Day of Month", fontsize=8)
 
         # Rotate x-axis labels by 45 degrees
-        plt.xticks(rotation=45, fontsize=4)
+        plt.xticks(rotation=45, fontsize=5)
         
         # set font size of y-axis label  
         plt.ylabel("Average Daily Temperature", fontsize=8)  
