@@ -4,7 +4,7 @@
 #   Group:          #10
 #   Team members:   Dean Lorenzo, Jesse Kosowan, Justin Martinez
 #   Milestone:      #2
-#   Updated:        Apr 8, 2023 
+#   Updated:        Apr 11, 2023 
 #
 
 """
@@ -58,10 +58,11 @@ class DBOperations:
         total_records_saved = 0
 
         with self.cursor as cur:
-            # weather_dictionary is reversed so that the oldest date for data is
-            # written in the database first, and the latest weather data is 
-            # inserted last
-            for sample_date, temps in reversed(data.items()):
+            for sample_date, temps in data.items():
+                formattedDate = datetime.strptime(sample_date, '%B %d, %Y')
+                stringDate = formattedDate.strftime('%Y-%m-%d')
+
+                sample_date = stringDate
                 location = 'Winnipeg'
                 max_temp = temps.get('max_temp', None)
                 min_temp = temps.get('min_temp', None)
@@ -75,10 +76,10 @@ class DBOperations:
                     """, (sample_date,))
                     existing_data = cur.fetchone()
 
-                    if existing_data:
-                        pass
+                    if existing_data:                        
                         # used for debugging
                         # print(f"Data already exists for {sample_date}. Skipping...")
+                        pass
                     else:
                         try:
                             cur.execute("""
@@ -112,52 +113,7 @@ class DBOperations:
         with self.cursor as cur:
             cur.execute('DELETE FROM weather_data')
             cur.connection.commit()
-            print('All data purged from the database.')
-        
-    def fetch_data(self, start_date, end_date):
-        """
-        This method fetches all temperature data from the database for the given date range.
-
-        Args:
-            start_date (str): The start date in the format "YYYY-MM-DD".
-            end_date (str): The end date in the format "YYYY-MM-DD".
-
-        Returns:
-            tuple: A tuple containing temperature data for each date in the format
-            (date, max_temp, min_temp, mean_temp).
-        """
-
-        # Convert start and end dates to the correct format for the database
-        start_date_formatted = datetime.strptime(start_date, '%Y-%m-%d')
-        end_date_formatted = datetime.strptime(end_date, '%Y-%m-%d')
-
-        # Create an empty list to store the temperature data for each date
-        data = []
-
-        with self.cursor as cur:
-            # Loop through the dates and fetch the temperature data for each date
-            while start_date_formatted <= end_date_formatted:
-                sample_date = start_date_formatted.strftime('%B %d, %Y')
-
-                # Drop leading zeroes only from the day portion of the formatted date
-                sample_date = re.sub(r'(?<=\s)0', '', sample_date)
-                cur.execute("""
-                    SELECT max_temp, min_temp, mean_temp 
-                    FROM weather_data 
-                    WHERE sample_date = ?
-                """, (sample_date,))
-                result = cur.fetchone()
-
-                # If the temperature data for the date exists, add it to the list
-                if result:
-                    max_temp, min_temp, mean_temp = result
-                    data.append((sample_date, max_temp, min_temp, mean_temp))
-
-                # Increment the date by one day
-                start_date_formatted += timedelta(days=1)
-
-        # Return the list of temperature data as a tuple
-        return tuple(data)
+            print('All data purged from the database.')      
     
     def fetch_mean_temp(self, start_date, end_date):
         """
@@ -172,7 +128,7 @@ class DBOperations:
             list: Mean Temperature data for each date 
         """
 
-        # Convert start and end dates to the correct format for the database
+        # Convert start and end dates to date objects for comparison
         start_date_formatted = datetime.strptime(start_date, '%Y-%m-%d')
         end_date_formatted = datetime.strptime(end_date, '%Y-%m-%d')
 
@@ -180,12 +136,10 @@ class DBOperations:
         data = []
 
         with self.cursor as cur:
-            # Loop through the dates and fetch the temperature data for each date
+            # Loop through the dates and fetch the mean temperature for each date
             while start_date_formatted <= end_date_formatted:
-                sample_date = start_date_formatted.strftime('%B %d, %Y')
-
-                # Drop leading zeroes only from the day portion of formatted date
-                sample_date = re.sub(r'(?<=\s)0', '', sample_date)
+                sample_date = start_date_formatted
+                sample_date = sample_date.strftime('%Y-%m-%d')
                 cur.execute("""
                     SELECT mean_temp 
                     FROM weather_data 
@@ -227,15 +181,13 @@ class DBOperations:
         # Get the latest date in the database
         with self.cursor as cur:
             cur.execute("""
-                SELECT sample_date
+                SELECT max(sample_date)
                 FROM weather_data
-                WHERE id =  (SELECT max(id) 
-                             FROM weather_data)
             """)            
             latest_date = cur.fetchone()[0]
        
         # Parse the latest date string to a date time object
-        latest_date = datetime.strptime(latest_date, '%B %d, %Y')
+        latest_date = datetime.strptime(latest_date, '%Y-%m-%d')
 
         # Find difference between latest entry in in the db and select the day after
         date_after_latest = (latest_date + timedelta(days=1)).strftime('%Y-%m-%d')
@@ -271,4 +223,4 @@ if __name__ == "__main__":
     # db.create_entire_database()
 
     # Check to see if the database has as new records to add
-    db.update_database()       
+    db.update_database()    
