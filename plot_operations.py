@@ -43,7 +43,7 @@ class PlotOperations:
         - year_end_date: a string representing the end date of the year in YYYY-MM-DD format
         
         Returns:
-        - A list of the monthly year averages for the given month within the given date range
+        - A list of the monthly year averages for the given month within the given date range20
         """
         
         # converts the data to a dictionary of mean temps
