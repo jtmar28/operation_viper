@@ -1,3 +1,11 @@
+##
+#   Group Project:  Weather Processing App
+#   Course:         ADEV-3005(234116)
+#   Group:          #10
+#   Team members:   Dean Lorenzo, Jesse Kosowan, Justin Martinez
+#   Milestone:      #3
+#   Updated:        Apr 11, 2023
+#
 """Contains the WeatherProcessor class, which handles events and controls
    several other modules, which together scrape, store, and plot weather data."""
 import threading
