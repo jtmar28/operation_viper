@@ -145,7 +145,7 @@ class PlotOperations:
         plt.xlabel("Day of Month", fontsize=8)
 
         # Rotate x-axis labels by 45 degrees
-        plt.xticks(rotation=45, fontsize=4)
+        plt.xticks(rotation=45, fontsize=5)
         
         # set font size of y-axis label  
         plt.ylabel("Average Daily Temperature", fontsize=8)  
