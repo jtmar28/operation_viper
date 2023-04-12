@@ -205,5 +205,5 @@ if __name__ == "__main__":
     plot_yearly.plot_yearly_graph()
 
     # fetch month data, and output the graph
-    # month_data = plot_monthly.fetch_month_averages()
-    # plot_monthly.plot_monthly_graph(month_data)        
+    month_data = plot_monthly.fetch_month_averages()
+    plot_monthly.plot_monthly_graph(month_data)        
