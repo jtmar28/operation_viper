@@ -58,7 +58,7 @@ class DBOperations:
 
         with self.cursor as cur:
             for sample_date, temps in data.items():
-                formattedDate = datetime.strptime(sample_date, '%B %d, %Y')
+                formattedDate = datetime.strptime(sample_date, '%Y-%m-%d')
                 stringDate = formattedDate.strftime('%Y-%m-%d')
 
                 sample_date = stringDate
