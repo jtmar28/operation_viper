@@ -4,7 +4,7 @@
 #   Group:          #10
 #   Team members:   Dean Lorenzo, Jesse Kosowan, Justin Martinez
 #   Milestone:      #1
-#   Updated:        Apr 11, 2023
+#   Updated:        Apr 12, 2023
 #
 
 """
@@ -210,7 +210,7 @@ class WeatherDataParser(HTMLParser):
                 # If the current date is within the range of start_date and end_date,
                 # print the weather data for that date line by line
                 for date_str in parser.weather.keys():
-                    date = datetime.datetime.strptime(date_str, '%B %d, %Y').date()
+                    date = datetime.datetime.strptime(date_str, '%Y-%m-%d').date()
                     if start_datetime.date() <= date <= end_datetime.date() \
                         and date == current_date.date():
                         weather_data = parser.weather[date_str]
