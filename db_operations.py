@@ -4,7 +4,7 @@
 #   Group:          #10
 #   Team members:   Dean Lorenzo, Jesse Kosowan, Justin Martinez
 #   Milestone:      #2
-#   Updated:        Apr 11, 2023 
+#   Updated:        Apr 12, 2023 
 #
 
 """
@@ -14,7 +14,6 @@ that is parsed from the scrape_weather module.
 
 from datetime import datetime, timedelta
 from pprint import pprint
-import re
 import sqlite3
 from dbcm import DBCM
 from scrape_weather import WeatherDataParser
