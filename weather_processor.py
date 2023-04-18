@@ -15,7 +15,6 @@ from db_operations import DBOperations
 from plot_operations import PlotOperations
 from scrape_weather import WeatherScraper
 
-
 class WeatherProcessor(frmMain):
     """
     Contains the WeatherProcessor class, which handles events and controls
