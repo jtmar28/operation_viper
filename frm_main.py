@@ -1,3 +1,12 @@
+##
+#   Group Project:  Weather Processing App
+#   Course:         ADEV-3005(234116)
+#   Group:          #10
+#   Team members:   Justin Martinez
+#   Milestone:      #3
+#   Updated:        Apr 11, 2023 
+#
+
 # -*- coding: utf-8 -*-
 
 ###########################################################################
@@ -15,8 +24,16 @@ import wx.xrc
 ###########################################################################
 
 class frmMain ( wx.Frame ):
+	"""Class representing the main frame of the Weather Processing App"""
 
 	def __init__( self, parent ):
+		"""
+        Constructor for the frmMain class.
+
+        Args:
+            parent: wx.Window parent object
+        """
+		
 		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"Weather Processor", pos = wx.DefaultPosition, size = wx.Size( 500,302 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
 
 		self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
@@ -135,17 +152,39 @@ class frmMain ( wx.Frame ):
 		self.btnPlotMonthly.Bind( wx.EVT_BUTTON, self.plot_monthly_temps )
 
 	def __del__( self ):
-		pass
+		"""
+		Destructor method. Does nothing.
+		"""
 
+		pass
 
 	# Virtual event handlers, override them in your derived class
 	def download( self, event ):
+		"""
+		Handler for the download event.
+
+		Args:
+			event: Event object
+		"""
+
 		event.Skip()
 
 	def plot_daily_temps( self, event ):
+		"""
+		Handler for the plot_daily_temps event.
+
+		Args:
+			event: Event object
+		"""
+
 		event.Skip()
 
 	def plot_monthly_temps( self, event ):
+		"""
+		Handler for the plot_monthly_temps event.
+
+		Args:
+			event: Event object
+		"""
+
 		event.Skip()
-
-

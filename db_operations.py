@@ -2,15 +2,10 @@
 #   Group Project:  Weather Processing App
 #   Course:         ADEV-3005(234116)
 #   Group:          #10
-#   Team members:   Dean Lorenzo, Jesse Kosowan, Justin Martinez
+#   Team members:   Dean Lorenzo, Jesse Kosowan 
 #   Milestone:      #2
 #   Updated:        Apr 12, 2023 
 #
-
-"""
-This module adds functionality to the Weather App by managing database data
-that is parsed from the scrape_weather module.
-"""
 
 from datetime import datetime, timedelta
 from pprint import pprint
@@ -19,6 +14,10 @@ from dbcm import DBCM
 from scrape_weather import WeatherDataParser
 
 class DBOperations:
+    """
+    This class adds functionality to the Weather App by managing database data
+    that is parsed from the scrape_weather module.
+    """
     def __init__(self):
         """
         Initializes an instance of the class with the following instance variables:

@@ -2,7 +2,7 @@
 #   Group Project:  Weather Processing App
 #   Course:         ADEV-3005(234116)
 #   Group:          #10
-#   Team members:   Dean Lorenzo, Jesse Kosowan, Justin Martinez
+#   Team members:   Dean Lorenzo, Jesse Kosowan
 #   Milestone:      #3
 #   Updated:        Apr 11, 2023 
 #
@@ -11,12 +11,11 @@ import matplotlib.pyplot as plt
 from db_operations import DBOperations
 from datetime import datetime
 
-"""
-This module adds functionality to the Weather App by outputting graphical data
-to the screen.
-"""
-
 class PlotOperations:
+    """
+    This class adds functionality to the Weather App by outputting graphical data
+    to the screen.
+    """
     def __init__(self):
         """
         Initializes an instance of the class with the following instance variables:
