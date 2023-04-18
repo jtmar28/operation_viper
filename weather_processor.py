@@ -15,6 +15,7 @@ from db_operations import DBOperations
 from plot_operations import PlotOperations
 from scrape_weather import WeatherScraper
 
+
 class WeatherProcessor(frmMain):
     """
     Contains the WeatherProcessor class, which handles events and controls
@@ -49,7 +50,8 @@ class WeatherProcessor(frmMain):
 
     def download_complete(self, weather_data):
         """
-        Recieves weather data from the scraper thread, then saves it to the database.
+        Recieves weather data from the scraper thread, then saves it to the 
+        database.
         """
 
         database = DBOperations("weather_database.sqlite")
@@ -58,14 +60,16 @@ class WeatherProcessor(frmMain):
 
     def update_status(self, progress):
         """
-        Recieves status updates from the scraper thread, and displays them in the UI.
+        Recieves status updates from the scraper thread, and displays them in 
+        the UI.
         """
 
         self.lblStatus.SetLabel("Status: " + progress)
 
     def plot_daily_temps(self, event):
         """
-        Displays the daily mean temps for a given month in a given year as a line plot.
+        Displays the daily mean temps for a given month in a given year as a 
+        line plot.
         """
 
         year = self.txtDailyYear.GetValue()
@@ -83,7 +87,8 @@ class WeatherProcessor(frmMain):
 
     def plot_monthly_temps(self, event):
         """
-        Displays the mean temps of the months in a given year range as a box plot.
+        Displays the mean temps of the months in a given year range as a box 
+        plot.
         """
 
         start_year = self.txtStartYear.GetValue()
@@ -98,6 +103,7 @@ class WeatherProcessor(frmMain):
 
         operations = PlotOperations()
         operations.plot_monthly(weather_data, start_year, end_year)
+
 
 if __name__ == "__main__":
     app = wx.App()
