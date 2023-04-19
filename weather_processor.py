@@ -15,6 +15,7 @@ from db_operations import DBOperations
 from plot_operations import PlotOperations
 from scrape_weather import WeatherScraper
 
+
 class WeatherProcessor(frmMain):
     """
     Contains the WeatherProcessor class, which handles events and controls
@@ -71,6 +72,7 @@ class WeatherProcessor(frmMain):
         line plot.
         """
 
+        # input validation
         valid_input = False
         while not valid_input:
             year = self.txtDailyYear.GetValue()
@@ -80,11 +82,12 @@ class WeatherProcessor(frmMain):
             else:
                 wx.MessageBox("Invalid input! Please enter a valid year \
                               (4 digits) and month (1-12).", "Error",
-                                wx.OK | wx.ICON_ERROR)
+                              wx.OK | wx.ICON_ERROR)
 
         start_date = f"{year}-{month.zfill(2)}-01"
         end_date = f"{year}-{month.zfill(2)}-31"
 
+        # old code without validation
         # year = self.txtDailyYear.GetValue()
         # month = self.txtDailyMonth.GetValue()
 
@@ -104,6 +107,7 @@ class WeatherProcessor(frmMain):
         plot.
         """
 
+        # input validation
         valid_input = False
         while not valid_input:
             start_year = self.txtStartYear.GetValue()
@@ -113,8 +117,9 @@ class WeatherProcessor(frmMain):
             else:
                 wx.MessageBox("Invalid input! Please enter a valid start and \
                               end year (4 digits).", "Error",
-                                wx.OK | wx.ICON_ERROR)
+                              wx.OK | wx.ICON_ERROR)
 
+        # old code without validation
         # start_year = self.txtStartYear.GetValue()
         # end_year = self.txtEndYear.GetValue()
 
