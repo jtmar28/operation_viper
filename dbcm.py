@@ -2,7 +2,7 @@
 #   Group Project:  Weather Processing App
 #   Course:         ADEV-3005(234116)
 #   Group:          #10
-#   Team members:   Justin Martinez, Dean Lorenzo
+#   Author(s):      Justin Martinez, Dean Lorenzo
 #   Milestone:      #2
 #   Updated:        Apr 5, 2023
 #

@@ -2,7 +2,7 @@
 #   Group Project:  Weather Processing App
 #   Course:         ADEV-3005(234116)
 #   Group:          #10
-#   Team members:   Dean Lorenzo, Jesse Kosowan 
+#   Author(s):      Dean Lorenzo, Jesse Kosowan 
 #   Milestone:      #2
 #   Updated:        Apr 12, 2023 
 #

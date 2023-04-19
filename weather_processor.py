@@ -2,7 +2,7 @@
 #   Group Project:  Weather Processing App
 #   Course:         ADEV-3005(234116)
 #   Group:          #10
-#   Team members:   Justin Martinez
+#   Author(s):      Justin Martinez, Dean Lorenzo
 #   Milestone:      #3
 #   Updated:        Apr 11, 2023
 #
@@ -49,7 +49,7 @@ class WeatherProcessor(frmMain):
 
     def download_complete(self, weather_data):
         """
-        Recieves weather data from the scraper thread, then saves it to the 
+        Recieves weather data from the scraper thread, then saves it to the
         database.
         """
 
@@ -59,7 +59,7 @@ class WeatherProcessor(frmMain):
 
     def update_status(self, progress):
         """
-        Recieves status updates from the scraper thread, and displays them in 
+        Recieves status updates from the scraper thread, and displays them in
         the UI.
         """
 
@@ -67,7 +67,7 @@ class WeatherProcessor(frmMain):
 
     def plot_daily_temps(self, event):
         """
-        Displays the daily mean temps for a given month in a given year as a 
+        Displays the daily mean temps for a given month in a given year as a
         line plot.
         """
 
@@ -78,10 +78,10 @@ class WeatherProcessor(frmMain):
             if len(year) == 4 and month.isdigit() and 1 <= int(month) <= 12:
                 valid_input = True
             else:
-                wx.MessageBox("Invalid input! Please enter a valid year " \
-                              "(4 digits) and month (1-12).", "Error",
+                wx.MessageBox("Invalid input! Please enter a valid year \
+                              (4 digits) and month (1-12).", "Error",
                                 wx.OK | wx.ICON_ERROR)
-                
+
         start_date = f"{year}-{month.zfill(2)}-01"
         end_date = f"{year}-{month.zfill(2)}-31"
 
@@ -100,7 +100,7 @@ class WeatherProcessor(frmMain):
 
     def plot_monthly_temps(self, event):
         """
-        Displays the mean temps of the months in a given year range as a box 
+        Displays the mean temps of the months in a given year range as a box
         plot.
         """
 
@@ -111,8 +111,8 @@ class WeatherProcessor(frmMain):
             if len(start_year) == 4 and len(end_year) == 4:
                 valid_input = True
             else:
-                wx.MessageBox("Invalid input! Please enter a valid start and " \
-                              "end year (4 digits).", "Error", 
+                wx.MessageBox("Invalid input! Please enter a valid start and \
+                              end year (4 digits).", "Error",
                                 wx.OK | wx.ICON_ERROR)
 
         # start_year = self.txtStartYear.GetValue()
