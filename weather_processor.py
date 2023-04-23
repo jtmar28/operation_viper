@@ -70,37 +70,14 @@ class WeatherProcessor(frmMain):
         """
         Displays the daily mean temps for a given month in a given year as a
         line plot.
+        """
 
-<<<<<<< HEAD
-        # input validation
-        valid_input = False
-        while not valid_input:
-            year = self.txtDailyYear.GetValue()
-            month = self.txtDailyMonth.GetValue()
-            if len(year) == 4 and month.isdigit() and 1 <= int(month) <= 12:
-                valid_input = True
-            else:
-                wx.MessageBox("Invalid input! Please enter a valid year \
-                              (4 digits) and month (1-12).", "Error",
-                              wx.OK | wx.ICON_ERROR)
-
-        start_date = f"{year}-{month.zfill(2)}-01"
-        end_date = f"{year}-{month.zfill(2)}-31"
-
-        # old code without validation
-        # year = self.txtDailyYear.GetValue()
-        # month = self.txtDailyMonth.GetValue()
-
-        # start_date = f"{year}-{month}-01"
-        # end_date = f"{year}-{month}-31"
-=======
         # old code without validation
         year = self.txtDailyYear.GetValue()
         month = self.txtDailyMonth.GetValue()
 
         start_date = f"{year}-{month}-01"
         end_date = f"{year}-{month}-31"
->>>>>>> 435bd10dad4d2445aa46e09d21ff7e8ed6428581
 
         database = DBOperations("weather_database.sqlite")
 
@@ -115,21 +92,9 @@ class WeatherProcessor(frmMain):
         plot.
         """
 
-        # input validation
-        valid_input = False
-        while not valid_input:
-            start_year = self.txtStartYear.GetValue()
-            end_year = self.txtEndYear.GetValue()
-            if len(start_year) == 4 and len(end_year) == 4:
-                valid_input = True
-            else:
-                wx.MessageBox("Invalid input! Please enter a valid start and \
-                              end year (4 digits).", "Error",
-                              wx.OK | wx.ICON_ERROR)
-
         # old code without validation
-        # start_year = self.txtStartYear.GetValue()
-        # end_year = self.txtEndYear.GetValue()
+        start_year = self.txtStartYear.GetValue()
+        end_year = self.txtEndYear.GetValue()
 
         start_date = f"{start_year}-01-01"
         end_date = f"{end_year}-12-31"
