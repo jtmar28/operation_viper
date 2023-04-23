@@ -2,7 +2,7 @@
 #   Group Project:  Weather Processing App
 #   Course:         ADEV-3005(234116)
 #   Group:          #10
-#   Author(s):      Justin Martinez, Dean Lorenzo
+#   Author(s):      Justin Martinez
 #   Milestone:      #3
 #   Updated:        Apr 11, 2023
 #
@@ -70,8 +70,8 @@ class WeatherProcessor(frmMain):
         """
         Displays the daily mean temps for a given month in a given year as a
         line plot.
-        """
 
+<<<<<<< HEAD
         # input validation
         valid_input = False
         while not valid_input:
@@ -93,6 +93,14 @@ class WeatherProcessor(frmMain):
 
         # start_date = f"{year}-{month}-01"
         # end_date = f"{year}-{month}-31"
+=======
+        # old code without validation
+        year = self.txtDailyYear.GetValue()
+        month = self.txtDailyMonth.GetValue()
+
+        start_date = f"{year}-{month}-01"
+        end_date = f"{year}-{month}-31"
+>>>>>>> 435bd10dad4d2445aa46e09d21ff7e8ed6428581
 
         database = DBOperations("weather_database.sqlite")
 

@@ -2,7 +2,7 @@
 #   Group Project:  Weather Processing App
 #   Course:         ADEV-3005(234116)
 #   Group:          #10
-#   Author(s):  	Justin Martinez
+#   Author(s):	    Justin Martinez
 #   Milestone:      #3
 #   Updated:        Apr 11, 2023 
 #
@@ -62,7 +62,6 @@ class frmMain ( wx.Frame ):
 		self.btnDownload = wx.Button( self.m_panel1, wx.ID_ANY, u"Download", wx.DefaultPosition, wx.DefaultSize, 0 )
 		gSizer11.Add( self.btnDownload, 0, wx.ALL, 5 )
 
-
 		self.m_panel1.SetSizer( gSizer11 )
 		self.m_panel1.Layout()
 		gSizer11.Fit( self.m_panel1 )
@@ -102,7 +101,6 @@ class frmMain ( wx.Frame ):
 		self.txtDailyMonth = wx.TextCtrl( self.m_panel2, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
 		gSizer6.Add( self.txtDailyMonth, 0, wx.ALL, 5 )
 
-
 		gSizer5.Add( gSizer6, 1, wx.EXPAND, 5 )
 
 		gSizer7 = wx.GridSizer( 0, 2, 0, 0 )
@@ -139,7 +137,6 @@ class frmMain ( wx.Frame ):
 		self.m_notebook1.AddPage( self.m_panel2, u"Report", False )
 
 		bSizer1.Add( self.m_notebook1, 1, wx.EXPAND |wx.ALL, 5 )
-
 
 		self.SetSizer( bSizer1 )
 		self.Layout()
