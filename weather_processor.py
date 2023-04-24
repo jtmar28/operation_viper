@@ -2,11 +2,12 @@
 #   Group Project:  Weather Processing App
 #   Course:         ADEV-3005(234116)
 #   Group:          #10
-#   Author(s):      Justin Martinez
+#   Team members:   Justin Martinez
 #   Milestone:      #3
 #   Updated:        Apr 11, 2023
 #
-
+"""Contains the WeatherProcessor class, which handles events and controls
+   several other modules, which together scrape, store, and plot weather data."""
 import threading
 from pubsub import pub
 import wx
@@ -16,10 +17,7 @@ from plot_operations import PlotOperations
 from scrape_weather import WeatherScraper
 
 class WeatherProcessor(frmMain):
-    """
-    Contains the WeatherProcessor class, which handles events and controls
-    several other modules, which together scrape, store, and plot weather data.
-    """
+    """Contains functions to handle events when the download or plot buttons are pressed."""
 
     def __init__(self):
         """Initializes the frame."""
@@ -29,7 +27,6 @@ class WeatherProcessor(frmMain):
         """
         Downloads either missing or all data to the database.
         """
-
         self.lblStatus.SetLabel("Status: Downloading data...")
 
         download = self.choiceData.GetSelection()
@@ -47,31 +44,28 @@ class WeatherProcessor(frmMain):
         scrape_thread = threading.Thread(daemon=True, target=scraper.scrape)
         scrape_thread.start()
 
+
     def download_complete(self, weather_data):
         """
-        Recieves weather data from the scraper thread, then saves it to the
-        database.
+        Recieves weather data from the scraper thread, then saves it to the database.
         """
-
         database = DBOperations("weather_database.sqlite")
         database.save_data(weather_data)
         self.lblStatus.SetLabel("Status: Download complete!")
 
+
     def update_status(self, progress):
         """
-        Recieves status updates from the scraper thread, and displays them in
-        the UI.
+        Recieves status updates from the scraper thread, and displays them in the UI.
         """
-
         self.lblStatus.SetLabel("Status: " + progress)
+
 
     def plot_daily_temps(self, event):
         """
-        Displays the daily mean temps for a given month in a given year as a
-        line plot.
+        Displays the daily mean temps for a given month in a given year as a line plot.
         """
 
-        # old code without validation
         year = self.txtDailyYear.GetValue()
         month = self.txtDailyMonth.GetValue()
 
@@ -85,13 +79,12 @@ class WeatherProcessor(frmMain):
         operations = PlotOperations()
         operations.plot_daily(weather_data)
 
+
     def plot_monthly_temps(self, event):
         """
-        Displays the mean temps of the months in a given year range as a box
-        plot.
+        Displays the mean temps of the months in a given year range as a box plot.
         """
-
-        # old code without validation
+  
         start_year = self.txtStartYear.GetValue()
         end_year = self.txtEndYear.GetValue()
 
@@ -105,8 +98,13 @@ class WeatherProcessor(frmMain):
         operations = PlotOperations()
         operations.plot_monthly(weather_data, start_year, end_year)
 
+
 if __name__ == "__main__":
+            
     app = wx.App()
+
     frm = WeatherProcessor()
+
     frm.Show()
+
     app.MainLoop()
