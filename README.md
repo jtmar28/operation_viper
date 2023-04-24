@@ -3,7 +3,6 @@
 #   Course:         ADEV-3005(234116)
 #   Group:          #10
 #   Author(s):      Dean Lorenzo, Jesse Kosowan, Justin Martinez
-#   Milestone:      #3
 #
 
 A weather processing app written in python that scrapes and parses data from 
